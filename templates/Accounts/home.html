@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+    {% include 'nav.html' %}
+{% endblock %}
+
+
+{% block logincart %}
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Login Form</h2>
+                    <form method="POST" action="{% url 'accounts:login' %}">
+                        {% csrf_token %}
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Email</label>
+                                    <input class="input--style-4" type="email" name="email" required>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Password</label>
+                                    <input class="input--style-4" type="text" name="password" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-t-15">
+                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                        </div>
+
+{#                        <div class="p-t-15">#}
+{#                            <p>#}
+{#                                Don't have a Patient Account? <a href="{% url 'patient:patient_signup' %}">singup here</a>#}
+{#                            </p>#}
+{#                            <br>#}
+{##}
+{#                            <p>#}
+{#                               Want to register as a doctor? <a href="{% url 'doctor:doctor_signup' %}">singup here</a>#}
+{#                            </p>#}
+{#                            <br>#}
+{##}
+{#                            <p>#}
+{#                                Want to register as a Pharmacy? <a href="#">signup here</a> <br>#}
+{#                            </p>#}
+{#                            <br>#}
+{##}
+{#                            <p>#}
+{#                                Want to be a delivery boy? <a href="#"> signup here</a>#}
+{#                            </p>#}
+{##}
+{#                        </div>#}
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
