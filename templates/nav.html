@@ -80,6 +80,7 @@
                                 <li><a href="{% url 'accounts:logout' %}">Pharmacy</a></li>
 
 
+
                                 {#                                {% if request.user.is_authenticated and request.user.role == 'doctor' %}#}
                                 {##}
                                 {#                                    <li>#}
@@ -120,6 +121,7 @@
                                     <ul class="dropdown">
                                         <li><a href="{% url 'doctor:doctor_signup' %}"> DOCTOR</a></li>
                                         <li><a href="{% url 'patient:patient_signup' %}"> PATIENT</a></li>
+                                        <li><a href="{% url 'pharmacy:pharmacy_signup' %}"> PHARMACY</a></li>
                                     </ul>
                                 </li>
 

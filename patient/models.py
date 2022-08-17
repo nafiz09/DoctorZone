@@ -1,11 +1,10 @@
 from django.db import models
 
-
 # Create your models here.
 
 
 class Patient(models.Model):
-    GENDER_CHOICES = [
+    GENDER_CHOICES =[
         ('M', 'Male'),
         ('F', 'Female'),
         ('T', 'Non-Binary')

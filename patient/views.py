@@ -8,6 +8,13 @@ from accounts.models import *
 from doctor.models import *
 import doctor.views as doctor_views
 import accounts.views as account_views
+from django.shortcuts import render, redirect
+from .models import *
+from datetime import date
+from accounts.models import *
+import accounts.views as account_views
+from product.models import *
+from pharmacy.models import *
 # Create your views here.
 
 def signup(request):
@@ -54,7 +61,9 @@ def load_patient(request, name):
     patient = Patient.objects.get(id=patient_id)
 
     context = {
-        'patient': patient
+        'patient': patient,
+        'patient_id': patient.id,
+        'name': patient.first_name + " " + patient.last_name
     }
 
     return render(request, 'Patient/Home/home.html', context)
@@ -274,3 +283,21 @@ def show_profile(request, name):
 
 def ageCalculator(date):
     return True
+
+def show_products(request):
+    products = Product.objects.all()
+    pharmacy = {}
+    # for p in products:
+    #     shop = Pharmacy.objects.get(id=p.shop_id)
+    #     pharmacy[p.id] = shop.shop_name
+    
+    # print(pharmacy.get(13))
+
+
+    context = {
+        'products': products,
+        'pharmacy': pharmacy
+    }
+
+    return render(request, 'Patient/products.html', context)
+

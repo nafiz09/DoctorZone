@@ -6,6 +6,7 @@ import doctor.views as doctor_views
 import patient.views as patient_views
 from doctor.models import *
 from patient.models import *
+from pharmacy.models import *
 from accounts.models import *
 
 
@@ -22,6 +23,9 @@ def login(request):
     elif 'patient' in request.session:
         patient = Patient.objects.get(id=request.session['patient'])
         return redirect(reverse('patient:home', kwargs={'name': patient.first_name}))
+    elif 'pharmacy' in request.session:
+        pharmacy = Pharmacy.objects.get(id=request.session['pharmacy'])
+        return redirect(reverse('pharmacy:home', kwargs={'name': pharmacy.id}))
 
     # if no session alive, show login page
     else:
@@ -36,7 +40,6 @@ def login(request):
                 print(account)
                 accpass = account.password
                 if password == accpass:
-                    print(1)
             # if matched, see user type and redirect to their own home page
                     if account.usertype == "Doctor":
                         doctor = Doctor.objects.get(email=email)
@@ -48,8 +51,13 @@ def login(request):
                     elif account.usertype == "Patient":
                         patient = Patient.objects.get(email=email)
                         request.session['patient'] = patient.id
-                        print('p')
+                        # print('p')
                         return redirect(reverse('patient:home', kwargs={'name': patient.first_name}))
+                    elif account.usertype == "Pharmacy":
+                        pharmacy = Pharmacy.objects.get(email=email)
+                        request.session['pharmacy'] = pharmacy.id
+                        print('p')
+                        return redirect(reverse('pharmacy:home', kwargs={'name': pharmacy.id}))
 
             # if user doesn't exist after querying, error comes, show the home page
             except:

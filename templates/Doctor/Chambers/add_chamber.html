@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
 {% block title %}Doctor{% endblock %}
 
 {% block nav %}
@@ -13,11 +14,13 @@
             <div class="card card-4">
                 <div class="card-body">
                     <h2 class="title">Add Chamber Form</h2>
+
 {#                    if no error message is present, just pass the test     #}
                      {% for err_msg in error_message %}
                         <p1>{{ err_msg }}</p1><br>
                      {% endfor %}
                     <br>
+
                     <form method="POST" action="{% url 'doctor:add_chamber' doctor.first_name %}">
                         {% csrf_token %}
                         <div class="row row-space">
@@ -154,6 +157,7 @@
                             <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

@@ -32,7 +32,6 @@ class Doctor(models.Model):
     license_no = models.CharField(max_length=10)
     specialist = models.CharField(max_length=20)
     verified = models.CharField(max_length=10, choices=VERIFICATION_CHOICES)
-
     prescriptionFields = models.CharField(max_length=250, default='NAME#AGE#SEX')
 
     def __str__(self):

@@ -3,11 +3,13 @@
 <!-- Preloader -->
 
 
+
 {#<div id="preloader">#}
 {#    <div class="preload-content">#}
 {#        <div id="dento-load"></div>#}
 {#    </div>#}
 {#</div>#}
+
 
 <!-- ***** Header Area Start ***** -->
 <header class="header-area">
@@ -83,6 +85,13 @@
                                     <a href="">
                                         <span class="glyphicon glyphicon-user">
                                             {{ request.user.first_name }}
+
+                                <li><a href="{% url 'patient:show_products' %}">Pharmacy</a></li>
+
+                                <li>
+                                    <a href="">
+                                        <span class="glyphicon glyphicon-user">
+                                            {{ name }}
                                         </span>
                                     </a>
                                     <ul class="dropdown">
@@ -90,6 +99,7 @@
 {#                                        <li><a href="{% url 'patient:edit:profile' patient.first_name %}"> EDIT PROFILE</a></li>#}
 {#                                        <li><a href="{% url 'patient:show_profile' patient.first_name %}"> SHOW PROFILE</a></li>#}
                                         <li><a href="{% url 'patient:show_appointments' patient.first_name %}"> SHOW APPOINTMENTS</a></li>
+
                                     </ul>
                                 </li>
 

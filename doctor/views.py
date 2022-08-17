@@ -82,6 +82,7 @@ def signup(request):
 
         # redirect to login
         return render(request, "Accounts/home.html", {})
+        
     # return render(request, "Doctor/Signup/Signup.html", data)
     return render(request, "Doctor/Signup/registration.html", data)
 
@@ -125,6 +126,7 @@ def add_chamber(request, name):
     # "E"  # "END time not defined\n"
     # "N"  #NOT VALID #START TIME > END TIME
     # V valid
+
 
     if request.method == "POST":
         # after insertion of data, redirect to doctor's home page
@@ -529,4 +531,49 @@ def show_profile_public(request, name, patient_id):
     }
 
     return render(request, "Doctor/Appointment/show_patient_public.html", context)
+         error_msg = error_msg + "NO days selected for chamber openings \n"
 
+
+        # chamber = Chamber( sat_starttime=sat_start, sat_endtime=sat_end,
+        #                   sun_starttime=sun_start, sun_endtime=sun_end,
+        #                   mon_starttime=mon_start, mon_endtime=mon_end,
+        #                   tues_starttime=tues_start, tues_endtime=tues_end,
+        #                   wed_starttime=wed_start, wed_endtime=wed_end,
+        #                   thrs_starttime=sat_start, thrs_endtime=sat_end,
+        #                   fri_starttime=fri_start, fri_endtime=fri_end,
+        #                   address=address, payment=payment
+        #                   )
+        # chamber.save()
+        return redirect(reverse('doctor:home', kwargs={'name': doctor.first_name}))
+
+
+
+
+    return render(request, 'Doctor/Chambers/add_chamber.html', context)
+
+
+# #   text is in format '14:50'
+# def convert_time(my_time):
+#     TIME = datetime.strptime(my_time, "%H:%M")
+#     print(TIME)
+#     return TIME
+
+
+def checkTime(start, end):
+    if start == '' and end == '':
+        return "C"   #"No CHAMBER on this day"
+    elif start == '' and end != '':
+        return "S"   #"START time not defined"
+    elif start != '' and end == '':
+        return "E"     #"END time not defined"
+    else:
+        start = start.split(':')
+        end = end.split(':')
+        startInMinutes = int(start[0])*60 + int(start[1])
+        endInMinutes = int(end[0])*60 + int(end[1])
+
+        #   doctor is sitting for AT LEAST >0 minutes today
+        if endInMinutes - startInMinutes > 0:
+            return "V"  #VALID
+        else:
+            return "N"  #NOT VALID #START TIME > END TIME

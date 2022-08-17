@@ -4,6 +4,13 @@
 
 
 
+{#<div id="preloader">#}
+{#    <div class="preload-content">#}
+{#        <div id="dento-load"></div>#}
+{#    </div>#}
+{#</div>#}
+
+
 <!-- ***** Header Area Start ***** -->
 <header class="header-area">
     <!-- Top Header Area -->
@@ -89,6 +96,7 @@
                                         </li>
                                         <li><a href="{% url 'doctor:prescription' doctor.first_name %}"> Customize Prescription </a></li>
 
+
                                         {#                                          <li><a href="#"> {{ doctor }}</a></li>#}
                                         {#                                          <li><a href="#"> {{ doctor.first_name }}</a></li>#}
 
@@ -109,3 +117,4 @@
         </div>
     </div>
 </header>
+

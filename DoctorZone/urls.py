@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 import accounts.views
 import patient.views
@@ -27,7 +29,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('patient/', include('patient.urls', namespace='patient')),
     path('doctor/', include('doctor.urls', namespace='doctor')),
-    path('', accounts.views.landing_home, name='main_home'),
-
-
+    path('pharmacy/', include('pharmacy.urls', namespace='pharmacy')),
+    path('', accounts.views.landing_home, name='main_home')
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
