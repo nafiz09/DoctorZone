@@ -1,7 +1,7 @@
 """DoctorZone URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
+    https://docs.djangoproject.com/en/4.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -14,8 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.views.generic import TemplateView
+
+import accounts.views
+import patient.views
+import doctor.views
+from doctor.models import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('patient/', include('patient.urls', namespace='patient')),
+    path('doctor/', include('doctor.urls', namespace='doctor')),
+    path('', accounts.views.landing_home, name='main_home'),
+
+
 ]

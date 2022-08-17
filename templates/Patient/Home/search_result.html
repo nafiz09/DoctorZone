@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Patient{% endblock %}
+
+{% block nav %}
+    {% include 'Patient/Home/nav_patient.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Available Doctor Chambers</h2>
+                    {% for chamber in chambers %}
+                        <div class="card text-center" style="width: 35rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ chamber.doctor_name}} </h5>
+                                <p class="card-text">ADDRESS : {{ chamber.address }}</p>
+                                <p class="card-text">{{ chamber.sat}}</p>
+                                <p class="card-text">{{ chamber.sun}}</p>
+                                <p class="card-text">{{ chamber.mon}}</p>
+                                <p class="card-text">{{ chamber.tues}}</p>
+                                <p class="card-text">{{ chamber.wed}}</p>
+                                <p class="card-text">{{ chamber.thrs}}</p>
+                                <p class="card-text">{{ chamber.fri}}</p>
+
+                                <h5> PAYMENT : {{ chamber.payment }} </h5>
+                                <h6>
+                                    <a href="{% url 'patient:take_appointment' patient.first_name chamber.chamber_id %}" class="btn btn-primary">
+                                        <button>
+                                            Book Appointment {{ chamber.chamber_id }}
+                                        </button>
+                                    </a>
+                                </h6>
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+{% endblock %}

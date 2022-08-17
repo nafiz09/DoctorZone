@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Doctor{% endblock %}
+
+{% block nav %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Edit Chamber Form</h2>
+{#                    if no error message is present, just pass the test     #}
+                     {% for err_msg in error_message %}
+                        <p1>{{ err_msg }}</p1><br>
+                     {% endfor %}
+                    <br>
+                    <form method="POST" action="{% url 'doctor:edit_chamber' doctor.first_name chamber_id %}">
+                        {% csrf_token %}
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Saturday Start Time</label>
+                                    <input class="input--style-4" type="time"
+                                           name="sat_start_time" max="20:00" min="08:00" value="{{ sat_starttime }}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Saturday End Time</label>
+                                    <input class="input--style-4" type="time" name="sat_end_time"
+                                           value="{{ sat_endtime }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Sunday Start Time</label>
+                                    <input class="input--style-4" type="time" name="sun_start_time"
+                                        value="{{ sun_starttime }}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Sunday End Time</label>
+                                    <input class="input--style-4" type="time" name="sun_end_time" value="{{ bla }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Monday Start Time</label>
+                                    <input class="input--style-4" type="time" name="mon_start_time" value="{{ mon_starttime }}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Monday End Time</label>
+                                    <input class="input--style-4" type="time" name="mon_end_time" value="{{ mon_endtime }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Tuesday Start Time</label>
+                                    <input class="input--style-4" type="time" name="tues_start_time" value="{{ tues_starttime }}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Tuesday End Time</label>
+                                    <input class="input--style-4" type="time" name="tues_end_time" value="{{ tues_endtime }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Wednesday Start Time</label>
+                                    <input class="input--style-4" type="time" name="wed_start_time" value="{{ wed_starttime }}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Wednesday End Time</label>
+                                    <input class="input--style-4" type="time" name="wed_end_time" value="{{ wed_endtime }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Thursday Start Time</label>
+                                    <input class="input--style-4" type="time" name="thrs_start_time" value="{{ thrs_starttime }}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Thursday End Time</label>
+                                    <input class="input--style-4" type="time" name="thrs_end_time" value="{{ thrs_endtime }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Friday Start Time</label>
+                                    <input class="input--style-4" type="time" name="fri_start_time" value="{{ fri_starttime }}">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Friday End Time</label>
+                                    <input class="input--style-4" type="time" name="fri_end_time" value="{{ fri_endtime }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Payment</label>
+                                    <input class="input--style-4" type="text" name="payment" value = "{{ payment }}">
+                                </div>
+                            </div>
+                        </div>
+{#                        <div class="row row-space">#}
+{#                            <div class="col-2">#}
+{#                                <div class="input-group">#}
+{#                                    <label class="label">License_No</label>#}
+{#                                    <input class="input--style-4" type="text" name="license">#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="row ">
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <label class="label">Address Detail</label>
+                                    <label>
+                                        <textarea class="form-control input--style-4" name="address"
+                                                  >{{ address }}</textarea>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-t-15">
+                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+
+                        </div>
+
+                    </form>
+{#                    <button class="btn btn-success" id="btn_check_id">#}
+{#                        Check#}
+{#                    </button>#}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{##}
+{#    <script>#}
+{#        $("#btn_check_id").click(function () {#}
+{#            console.log("button pressed")#}
+{#            let x = $("#saturday_start_id").val()#}
+{#            let y = $("#saturday_end_id").val()#}
+{##}
+{#            let time_start = x.split(":")[0]#}
+{#            let time_end = y.split(":")[0]#}
+{#            #}
+{#            console.log(time_end)#}
+{#            console.log(time_start)#}
+{##}
+{#            console.log(x)#}
+{#            console.log(y)#}
+{#        })#}
+{##}
+{##}
+{#    </script>#}
+
+{% endblock %}

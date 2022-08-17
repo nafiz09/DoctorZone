@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+    {% include 'nav.html' %}
+{% endblock %}
+
+
+{% block registration_form %}
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Prescription Modification Form</h2>
+                    <form method="POST" action="{% url 'doctor:prescription' doctor_name %}">
+
+                        {% for field in prescriptionFields %}
+                            <div class="row row-space">
+                                {#                            <div class="col-2">#}
+                                {#                                #}
+                                {#                            </div>#}
+                                <h5> {{ field }} </h5>
+                            </div>
+
+                        {% endfor %}
+                        <br>
+                        {% csrf_token %}
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Add This Field</label>
+                                    <input class="input--style-4" type="text" name="add_field" >
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Delete This Field</label>
+                                    <input class="input--style-4" type="text" name="delete_field">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="p-t-15">
+                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

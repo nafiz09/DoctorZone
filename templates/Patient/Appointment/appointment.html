@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Patient{% endblock %}
+
+{% block nav %}
+    {% include 'Patient/Home/nav_patient.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <!-- ***** Welcome Area Start ***** -->
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Book Appointment</h2>
+                    <form method="POST" action="{% url 'patient:take_appointment' patient.first_name chamber_id %}">
+                        {% csrf_token %}
+
+                        <div class="row row-space">
+                            {#                            <div class="col-2">#}
+                            {#                                #}
+                            {#                            </div>#}
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <h5><label class="label">Available Dates </label></h5>
+
+                                    <div class="p-t-10">
+                                        <br>
+                                        {% for date in appointment_dates %}
+                                            <div class="form-check">
+                                                {#                                            insert values in value="#"    #}
+                                                <input class="form-check-input" type="radio" name="Date_Radio"
+                                                       id="exampleRadios1" value="{{ date }}" checked>
+                                                <label class="form-check-label " for="exampleRadios1">
+                                                    {{ date }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+
+                                        {#                                        <div class="form-check">#}
+                                        {#                                            <input class="form-check-input" type="radio" name="exampleRadios"#}
+                                        {#                                                   id="exampleRadios2" value="option2">#}
+                                        {#                                            <label class="form-check-label" for="exampleRadios2">#}
+                                        {#                                                Date2#}
+                                        {#                                            </label>#}
+                                        {#                                        </div>#}
+                                        {#                                        <div class="form-check">#}
+                                        {##}
+                                        {#                                            <input class="form-check-input" type="radio" name="exampleRadios"#}
+                                        {#                                                   id="exampleRadios2" value="option3">#}
+                                        {#                                            <label class="form-check-label" for="exampleRadios3">#}
+                                        {#                                                Date3#}
+                                        {#                                            </label>#}
+                                        {#                                        </div>#}
+
+                                        {#                                        <label class="radio-container m-r-45">Date1#}
+                                        {#                                            <input type="radio" checked="checked" name="abrar_val" id="radio_submission" required>#}
+                                        {#                                            <span class="checkmark"></span>#}
+                                        {#                                        </label>#}
+                                        {##}
+                                        {#                                        <label class="radio-container m-r-45">nasif#}
+                                        {#                                            <input type="radio" name="nasif_val" value="off" id="radio_submission">#}
+                                        {#                                            <span class="checkmark"></span>#}
+                                        {#                                        </label>#}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-t-15">
+                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

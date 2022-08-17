@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Doctor{% endblock %}
+
+{% block nav %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
+{% endblock %}
+
+{% block card_chamber %}
+
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">{{ doctor.first_name }}'s Chambers' Info</h2>
+                    {#                    <div class="row row-space">#}
+                    {#                        <div class="col-2">#}
+                    {% for chamber in chambers %}
+                        <div class="card text-center" style="width: 35rem;">
+                            <div class="card-body">
+                                <h5 class="card-title"> ADDRESS : {{ chamber.address }}</h5>
+                                <p class="card-text">{{ chamber.sat}}</p>
+                                <p class="card-text">{{ chamber.sun}}</p>
+                                <p class="card-text">{{ chamber.mon}}</p>
+                                <p class="card-text">{{ chamber.tues}}</p>
+                                <p class="card-text">{{ chamber.wed}}</p>
+                                <p class="card-text">{{ chamber.thrs}}</p>
+                                <p class="card-text">{{ chamber.fri}}</p>
+                                <h5> PAYMENT : {{ chamber.payment }} </h5>
+                                <br>
+                                <h6>
+                                    <a href="{% url 'doctor:edit_chamber' doctor.first_name chamber.chamber_id %}" class="btn btn-primary">
+                                        <button>
+                                            Edit This Chamber {{ chamber.chamber_id }}
+                                        </button>
+                                    </a>
+                                </h6>
+                                <br>
+                                <h6>
+                                    <a href="{% url 'doctor:show_appointments_chamber' doctor.first_name chamber.chamber_id %}" class="btn btn-primary">
+                                        <button>
+                                            Show Appointments {{ chamber.chamber_id }}
+                                        </button>
+                                    </a>
+                                </h6>
+
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                    {#                        <div class="col-2">#}
+                    {##}
+                    {#                        </div>#}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    {#                    {% for chamber in chambers %}#}
+    {#                        <div class="card text-center" style="width: 25rem;">#}
+    {#                            <div class="card-body">#}
+    {#                                <h5 class="card-title"> {{ chamber.payment }}</h5>#}
+    {#                                <p class="card-text"></p>#}
+    {#                                <a href="#" class="btn btn-primary">Go somewhere</a>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    {% endfor %}#}
+
+{% endblock %}
