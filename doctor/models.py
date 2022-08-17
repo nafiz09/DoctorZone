@@ -81,14 +81,14 @@ class Chamber(models.Model):
 
 class Appointment(models.Model):
     STATE_CHOICES = [
-        ('Requested', 'requested'),
-        ('Ongoing', 'ongoing'),
-        ('Completed', 'completed')
+        ('Requested', 'Requested'),
+        ('Ongoing', 'Ongoing'),
+        ('Completed', 'Completed')
     ]
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     chamber = models.ForeignKey(Chamber, on_delete=models.CASCADE)
     date = models.DateField()
-    state = models.CharField(max_length=10, default='R', choices=STATE_CHOICES)
+    state = models.CharField(max_length=10, default='Requested', choices=STATE_CHOICES)
 #
 # class PrescriptionType(models.Model):
 # #     there will be a apoointment id attached to it.

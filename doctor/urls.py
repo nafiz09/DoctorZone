@@ -20,7 +20,7 @@ urlpatterns = [
     path('<slug:name>/customize_prescription/', doctor_views.customize_prescription, name='prescription'),
     # path('', doctor_views.load_doctor, name='doctor_home')
 
-    path('<slug:name>/show_profile_public/<slug:patient_id>/', doctor_views.show_profile_public, name='show_profile_public')
+    # path('<slug:name>/show_profile_public/<slug:patient_id>/', doctor_views.show_profile_public, name='show_profile_public')
 
 
     # path('', doctor_views.load_doctor, name='doctor_home')

@@ -1,4 +1,6 @@
 import datetime
+
+from django.http import JsonResponse
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from .models import *
@@ -53,7 +55,7 @@ def signup(request):
 def load_patient(request, name):
     if 'patient' not in request.session:
         return redirect(reverse('main_home'))
-
+    print("qwertyui")
     print("this is a function")
 
     patient_id = request.session['patient']
@@ -75,11 +77,13 @@ def search_result(request, name):
 
     doctors = Doctor.objects.all()
     # after searching I have some id's of DOCTOR that match the search
+    print("doctors")
+    print(doctors)
     chambersList = []
     for doctor in doctors:
         chamber_info_list = doctor_views.setupChamberList(doctor.id)
         if len(chamber_info_list) == 0:
-            break
+            continue
         print("chamber- info list")
         print(chamber_info_list)
         chambersList.append(chamber_info_list)
@@ -284,9 +288,13 @@ def show_profile(request, name):
 def ageCalculator(date):
     return True
 
-def show_products(request):
+
+def show_products(request, name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+    print("hahastart")
     products = Product.objects.all()
-    pharmacy = {}
     # for p in products:
     #     shop = Pharmacy.objects.get(id=p.shop_id)
     #     pharmacy[p.id] = shop.shop_name
@@ -296,8 +304,13 @@ def show_products(request):
 
     context = {
         'products': products,
-        'pharmacy': pharmacy
+        'patient': patient
     }
-
+    print("haha")
+    print(context)
+    print("haha1")
     return render(request, 'Patient/products.html', context)
 
+def test_function(request):
+    print("inside test function")
+    return JsonResponse({})

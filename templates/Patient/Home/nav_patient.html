@@ -76,8 +76,9 @@
                             <ul id="nav">
 
                                 <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+{#                                <li><a href="{% url 'patient:show-pharmacy-info' %}">Test Pharmacy</a></li>#}
 
-                                <li><a href="#">Pharmacy</a></li>
+{#                                <li><a href="#">Pharmacy</a></li>#}
 
                                 <li> <a href = "{% url 'patient:search_result' patient.first_name %}">Search Doctor</a>   </li>
 {#                                <li> <a href = "/search_result/">{{ patient.first_name }} Search Doctor</a>   </li>#}
@@ -85,8 +86,10 @@
                                     <a href="">
                                         <span class="glyphicon glyphicon-user">
                                             {{ request.user.first_name }}
+                                        </span>
+                                    </a>
 
-                                <li><a href="{% url 'patient:show_products' %}">Pharmacy</a></li>
+                                <li><a href="{% url 'patient:show_products' patient.first_name %}">Pharmacy</a></li>
 
                                 <li>
                                     <a href="">

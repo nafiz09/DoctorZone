@@ -258,8 +258,10 @@ def show_chamber(request, name):
 
 def setupChamberList(doctor_id):
     doctor = Doctor.objects.get(id=doctor_id)
+    print(doctor.first_name)
     chambers = Chamber.objects.filter(doctor=doctor)
     chambers_dic_list = []
+    print("inside chamber list")
     for chamber in chambers:
         dictionary = {}
         print(chamber.sat_starttime)
@@ -291,6 +293,8 @@ def setupChamberList(doctor_id):
         dictionary['payment'] = str(chamber.payment)
         dictionary['chamber_id'] = str(chamber.id)
         dictionary['doctor_name'] = str("Dr. " + doctor.first_name + " " + doctor.last_name)
+        print("each chamber info")
+        print(dictionary)
         chambers_dic_list.append(dictionary)
         # dictionary = {
         #     "sat_starttime" : chamber.sat_starttime, "sat_endtime" : chamber.sat_endtime,
@@ -303,6 +307,7 @@ def setupChamberList(doctor_id):
         #     "payment": chamber.payment, "address": chamber.address
         # }
 
+    print(chambers_dic_list)
     return chambers_dic_list
 
 
@@ -513,27 +518,27 @@ def customize_prescription(request, name):
         doctor.save()
         context = {
             'prescriptionFields': presFields,
-            'doctor_name': doctor.first_name
+            'doctor': doctor
         }
 
     return render(request, 'Doctor/Home/prescription_customization.html', context)
 
-
-def show_profile_public(request, name, patient_id):
-    if 'doctor' not in request.session:
-        return redirect(reverse('main_home'))
-
-    doctor = Doctor.objects.get(id=request.session['doctor'])
-    patient = Patient.objects.get(id=patient_id)
-
-    context = {
-        'patient': patient
-    }
-
-    return render(request, "Doctor/Appointment/show_patient_public.html", context)
-         error_msg = error_msg + "NO days selected for chamber openings \n"
-
-
+#
+# def show_profile_public(request, name, patient_id):
+#     if 'doctor' not in request.session:
+#         return redirect(reverse('main_home'))
+#
+#     doctor = Doctor.objects.get(id=request.session['doctor'])
+#     patient = Patient.objects.get(id=patient_id)
+#
+#     context = {
+#         'patient': patient
+#     }
+#
+#     return render(request, "Doctor/Appointment/show_patient_public.html", context)
+#          error_msg = error_msg + "NO days selected for chamber openings \n"
+#
+#
         # chamber = Chamber( sat_starttime=sat_start, sat_endtime=sat_end,
         #                   sun_starttime=sun_start, sun_endtime=sun_end,
         #                   mon_starttime=mon_start, mon_endtime=mon_end,
@@ -543,14 +548,14 @@ def show_profile_public(request, name, patient_id):
         #                   fri_starttime=fri_start, fri_endtime=fri_end,
         #                   address=address, payment=payment
         #                   )
-        # chamber.save()
-        return redirect(reverse('doctor:home', kwargs={'name': doctor.first_name}))
-
-
-
-
-    return render(request, 'Doctor/Chambers/add_chamber.html', context)
-
+    #     # chamber.save()
+    #     return redirect(reverse('doctor:home', kwargs={'name': doctor.first_name}))
+    #
+    #
+    #
+    #
+    # return render(request, 'Doctor/Chambers/add_chamber.html', context)
+    #
 
 # #   text is in format '14:50'
 # def convert_time(my_time):
@@ -558,22 +563,22 @@ def show_profile_public(request, name, patient_id):
 #     print(TIME)
 #     return TIME
 
-
-def checkTime(start, end):
-    if start == '' and end == '':
-        return "C"   #"No CHAMBER on this day"
-    elif start == '' and end != '':
-        return "S"   #"START time not defined"
-    elif start != '' and end == '':
-        return "E"     #"END time not defined"
-    else:
-        start = start.split(':')
-        end = end.split(':')
-        startInMinutes = int(start[0])*60 + int(start[1])
-        endInMinutes = int(end[0])*60 + int(end[1])
-
-        #   doctor is sitting for AT LEAST >0 minutes today
-        if endInMinutes - startInMinutes > 0:
-            return "V"  #VALID
-        else:
-            return "N"  #NOT VALID #START TIME > END TIME
+#
+# def checkTime(start, end):
+#     if start == '' and end == '':
+#         return "C"   #"No CHAMBER on this day"
+#     elif start == '' and end != '':
+#         return "S"   #"START time not defined"
+#     elif start != '' and end == '':
+#         return "E"     #"END time not defined"
+#     else:
+#         start = start.split(':')
+#         end = end.split(':')
+#         startInMinutes = int(start[0])*60 + int(start[1])
+#         endInMinutes = int(end[0])*60 + int(end[1])
+#
+#         #   doctor is sitting for AT LEAST >0 minutes today
+#         if endInMinutes - startInMinutes > 0:
+#             return "V"  #VALID
+#         else:
+#             return "N"  #NOT VALID #START TIME > END TIME
