@@ -17,7 +17,6 @@ from accounts.models import *
 import accounts.views as account_views
 from product.models import *
 from pharmacy.models import *
-from item.models import *
 # Create your views here.
 
 def signup(request):
@@ -82,14 +81,18 @@ def search_result(request, name):
     print(doctors)
     chambersList = []
     for doctor in doctors:
+        print("Doctor " + str(doctor.first_name))
         chamber_info_list = doctor_views.setupChamberList(doctor.id)
         if len(chamber_info_list) == 0:
             continue
         print("chamber- info list")
         print(chamber_info_list)
-        chambersList.append(chamber_info_list)
-        chambersList = chambersList[0]
-        print("chamberlist")
+        print("chamberList before append --------------")
+        print(chambersList)
+
+        for each_chamber in chamber_info_list:
+            chambersList.append(each_chamber)
+        print("chamberlist after append updated---------------")
         print(chambersList)
 
     print(chambersList)
@@ -312,17 +315,37 @@ def show_products(request, name):
     print("haha1")
     return render(request, 'Patient/products.html', context)
 
+
+def show_doctor_profile(request, name, chamber_id):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+
+    chamber = Chamber.objects.get(id=chamber_id)
+
+    doctor = chamber.doctor
+    degrees = DegreeOfDoctor.objects.filter(doctor_id=doctor.id)
+
+    context = {
+        'doctor': doctor,
+        'degrees': degrees,
+        'patient': patient
+    }
+
+    return render(request, 'Patient/Home/show_doctor_profile.html', context)
+
+
+def show_profile(request, name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+
+    context = {
+        'patient': patient
+    }
+
+    return render(request, 'Patient/Home/show_profile.html', context)
+
 def test_function(request):
     print("inside test function")
     return JsonResponse({})
-
-#add product to cart onclick action
-def add_to_cart(request):
-    patient = Patient.objects.get(id=request.session['patient'])
-    product_id = request.POST.get('product_id')
-    product = Product.objects.get(id=product_id)
-    status = "C"
-    item = Item(patient_id=patient, product_id=product, status=status)
-    item.save()
-    
-    return render(request, 'Patient/products.html', {})

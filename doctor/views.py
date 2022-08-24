@@ -490,7 +490,7 @@ def customize_prescription(request, name):
     print(len(presFields))
     context = {
         'prescriptionFields': presFields,
-        'doctor_name': doctor.first_name
+        'doctor': doctor
     }
     if request.method == 'POST':
         print(request.POST)
@@ -518,10 +518,27 @@ def customize_prescription(request, name):
         doctor.save()
         context = {
             'prescriptionFields': presFields,
-            'doctor': doctor
+            'doctor': Doctor.objects.get(id=request.session['doctor'])
         }
-
+    print("context")
+    print(context)
     return render(request, 'Doctor/Home/prescription_customization.html', context)
+
+
+def show_profile(request, name):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    degrees = DegreeOfDoctor.objects.filter(doctor_id=doctor.id)
+
+    context = {
+        'doctor': doctor,
+        'degrees': degrees
+    }
+
+    return render(request, 'Doctor/Home/show_profile.html', context)
+
+
 
 #
 # def show_profile_public(request, name, patient_id):

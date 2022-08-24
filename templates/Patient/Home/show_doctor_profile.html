@@ -6,45 +6,66 @@
     {% include 'Patient/Home/nav_patient.html' %}
 {% endblock %}
 
-{# need work #}
 
 {% block content %}
     <div class="container ">
         <div class="wrapper wrapper--w680">
             <div class="card card-4">
                 <div class="card-body">
-                    <h2 class="title"><b>Profile of <b> {{ patient.first_name }} {{ patient.last_name }}</b> </b></h2>
+                    <h2 class="title"><b>Profile of <b>Dr. {{ doctor.first_name }} {{ doctor.last_name }}</b> </b></h2>
 
                     <div class="row row-space">
                         <div class="col-2">
                             <h4><b>Birthday</b></h4>
-                            <p>{{ patient.birthday }}</p>
+                            <p>{{ doctor.birthday }}</p>
                         </div>
                         <div class="col-2">
                             <h4><b>Gender</b></h4>
-                            <p>{{ patient.gender }}</p>
+                            <p>{{ doctor.gender }}</p>
                         </div>
                     </div>
                     <div class="row row-space">
                         <div class="col-2">
                             <h4><b>Email</b></h4>
-                            <p>{{ patient.email }}</p>
+                            <p>{{ doctor.email }}</p>
                         </div>
                         <div class="col-2">
                             <h4><b>Contact No</b></h4>
-                            <p>{{ patient.mobile_no }}</p>
+                            <p>{{ doctor.mobile_no }}</p>
                         </div>
                     </div>
                     <div class="row row-space">
                         <div class="col-2">
                             <h4><b>Address</b></h4>
-                            <p>{{ patient.address }}</p>
+                            <p>{{ doctor.address }}</p>
                         </div>
 
                         <div class="col-2">
 
                         </div>
                     </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Specialist</b></h4>
+                            <p>{{ doctor.specialist }}</p>
+                        </div>
+                        <div class="col-2">
+
+                        </div>
+                    </div>
+
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Degrees</b></h4>
+                            {% for degree in degrees %}
+                                <p>{{ degree.degree_name }}, {{ degree.institute }} , {{ degree.degree_date }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="col-2">
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

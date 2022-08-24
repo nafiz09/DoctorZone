@@ -17,4 +17,6 @@ urlpatterns = [
     # path('<slug:name>/edit_profile/', patient_views.edit_profile, name='edit_profile'),
     # path('<slug:name>/show_profile/', patient_views.show_profile, name='show_profile')
     path('<slug:name>/', patient_views.load_patient, name='home'),
+    path('<slug:name>/show_doc_profile/<slug:chamber_id>/', patient_views.show_doctor_profile,name = 'show_doctor_profile'),
+    path('<slug:name>/show_profile/', patient_views.show_profile, name='show_profile')
 ]
