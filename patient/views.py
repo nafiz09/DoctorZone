@@ -17,6 +17,7 @@ from accounts.models import *
 import accounts.views as account_views
 from product.models import *
 from pharmacy.models import *
+from item.models import *
 # Create your views here.
 
 def signup(request):
@@ -314,3 +315,14 @@ def show_products(request, name):
 def test_function(request):
     print("inside test function")
     return JsonResponse({})
+
+#add product to cart onclick action
+def add_to_cart(request):
+    patient = Patient.objects.get(id=request.session['patient'])
+    product_id = request.POST.get('product_id')
+    product = Product.objects.get(id=product_id)
+    status = "C"
+    item = Item(patient_id=patient, product_id=product, status=status)
+    item.save()
+    
+    return render(request, 'Patient/products.html', {})
