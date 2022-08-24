@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor{% endblock %}
+
+{% block nav %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title"><b>Profile of <b>Dr. {{ doctor.first_name }} {{ doctor.last_name }}</b> </b></h2>
+
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Birthday</b></h4>
+                            <p>{{ doctor.birthday }}</p>
+                        </div>
+                        <div class="col-2">
+                            <h4><b>Gender</b></h4>
+                            <p>{{ doctor.gender }}</p>
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Email</b></h4>
+                            <p>{{ doctor.email }}</p>
+                        </div>
+                        <div class="col-2">
+                            <h4><b>Contact No</b></h4>
+                            <p>{{ doctor.mobile_no }}</p>
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Address</b></h4>
+                            <p>{{ doctor.address }}</p>
+                        </div>
+
+                        <div class="col-2">
+
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Specialist</b></h4>
+                            <p>{{ doctor.specialist }}</p>
+                        </div>
+                        <div class="col-2">
+
+                        </div>
+                    </div>
+
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Degrees</b></h4>
+                            {% for degree in degrees %}
+                                <p>{{ degree.degree_name }}, {{ degree.institute }} , {{ degree.degree_date }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="col-2">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

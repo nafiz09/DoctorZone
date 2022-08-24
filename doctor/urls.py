@@ -16,8 +16,9 @@ urlpatterns = [
     path('<slug:name>/edit_chamber/<slug:chamber_id>/', doctor_views.edit_chamber, name='edit_chamber'),
     # path('<slug:name>/show_appointments/chamber/', doctor_views.show_appointments_chamber, name='show_appointments_chamber')
     path('<slug:name>/show_appointments/chamber/<slug:chamber_id>', doctor_views.show_appointments_chamber, name='show_appointments_chamber'),
-
     path('<slug:name>/customize_prescription/', doctor_views.customize_prescription, name='prescription'),
+    path('<slug:name>/show_profile/', doctor_views.show_profile, name='show_profile')
+
     # path('', doctor_views.load_doctor, name='doctor_home')
 
     # path('<slug:name>/show_profile_public/<slug:patient_id>/', doctor_views.show_profile_public, name='show_profile_public')

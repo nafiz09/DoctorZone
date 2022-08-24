@@ -18,7 +18,7 @@
                     {% for chamber in chambers %}
                         <div class="card text-center" style="width: 35rem;">
                             <div class="card-body">
-                                <h5 class="card-title">{{ chamber.doctor_name}} </h5>
+                                <h5 class="card-title"> <a href="{% url 'patient:show_doctor_profile' patient.first_name chamber.chamber_id %}">{{ chamber.doctor_name}}</a> </h5>
                                 <p class="card-text">ADDRESS : {{ chamber.address }}</p>
                                 <p class="card-text">{{ chamber.sat}}</p>
                                 <p class="card-text">{{ chamber.sun}}</p>
