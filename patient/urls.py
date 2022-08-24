@@ -6,6 +6,7 @@ app_name = 'patient'
 
 urlpatterns = [
     path('<slug:name>/Pharmacy/', patient_views.show_products, name='show_products'),
+    path('<slug:name>/Cart/', patient_views.show_cart, name='show_cart'),
     path('pharmacy-info/', patient_views.test_function, name='show-pharmacy-info'),
     path('signup/', patient_views.signup, name='patient_signup'),
     # path('', patient_views.load_patient, name='home'),

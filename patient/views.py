@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import datetime
 
 from django.http import JsonResponse
@@ -17,6 +18,7 @@ from accounts.models import *
 import accounts.views as account_views
 from product.models import *
 from pharmacy.models import *
+from item.models import Item
 # Create your views here.
 
 def signup(request):
@@ -308,12 +310,48 @@ def show_products(request, name):
 
     context = {
         'products': products,
-        'patient': patient
+        'patient': patient,
+        'message': ''
     }
     print("haha")
     print(context)
     print("haha1")
+    if request.method == "POST":
+            if request.POST.get('selected'):
+                selected_item = request.POST.get('selected')
+                patient = Patient.objects.get(id=request.session['patient'])
+                product = Product.objects.get(id=selected_item)
+                items = Item.objects.filter(customer_id=patient.id)
+                # print(items[0].product.shop_id)
+                # print(product.shop_id)
+                if len(items) != 0:
+                    if items[0].product.shop_id != product.shop_id:
+                        print("not allowed")
+                        context['message'] = "You cannot buy from different pharmacies"
+                        return render(request, 'Patient/products.html', context)
+                for item in items:
+                    if item.product.id == product.id:
+                        # print("already in cart")
+                        context['message'] = "You already have this item in your cart"
+                        return render(request, 'Patient/products.html', context)
+                quantity = 1
+                status = 'Cart'
+                order = NULL
+                item = Item(customer=patient, product=product, quantity=quantity, status=status)
+                item.save()
+
     return render(request, 'Patient/products.html', context)
+
+def show_cart(request, name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+    items = Item.objects.filter(customer_id=patient.id)
+    context = {
+        'items': items,
+        'patient': patient
+    }
+    return render(request, 'Patient/cart.html', context)
 
 
 def show_doctor_profile(request, name, chamber_id):

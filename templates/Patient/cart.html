@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Patient{% endblock %}
+
+
+{% block nav %}
+    {% include 'Patient/Home/nav_patient.html' %}
+{% endblock %}
+
+
+{% block registration_form %}
+<table class="table">
+  <thead>
+  <tr>
+      <th scope="col">Medicine name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Shop name</th>
+
+  </tr>
+  </thead>
+  <tbody>
+
+  {% for item in items %}
+      <tr>
+
+          <td>{{ item.product.name }}</td>
+          <td> {{ item.product.price }}</td>
+          <td> <input type="number" id="quantity" name="quantity" value="1"> </td>
+          <td> {{ item.product.shop.shop_name }}</td>
+          <td>
+
+                  <span class="glyphicon glyphicon-trash"></span>
+              </a>
+          </td>
+      </tr>
+  {% endfor %}
+  </tbody>
+
+</table>
+       
+    
+
+{% endblock %}
