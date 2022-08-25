@@ -9,5 +9,6 @@ urlpatterns = [
     # path('', patient_views.load_patient, name='home'),
     path('add_product/', pharmacy_views.add_product, name='add_product'),
     path('show_products/', pharmacy_views.show_products, name='show_products'),
+    path('show_orders/', pharmacy_views.show_orders, name='show_orders'),
     path('<slug:name>/', pharmacy_views.load_pharmacy, name='home')
 ]
