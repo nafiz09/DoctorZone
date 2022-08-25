@@ -403,6 +403,19 @@ def history(request,name):
         'orders': orders,
         'patient': patient
     }
+    if request.method == "POST":
+        order_id = request.POST.get('selected')
+        items = Item.objects.filter(order_id=request.POST.get('selected'))
+        total = 0
+        for item in items:
+            total += item.total
+        c = {
+            'order_id': order_id,
+            'patient': patient,
+            'items': items,
+            'total': total
+        }
+        return render(request, 'Patient/show_details.html', c)
     return render(request, 'Patient/history.html', context)
 
 

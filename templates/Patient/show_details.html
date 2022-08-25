@@ -11,26 +11,26 @@
 
 
 {% block registration_form %}
+<p>Order no: {{ order_id }}</p>
 <table class="table">
   <thead>
   <tr>
-      <th scope="col">Order number</th>
-      <th scope="col">Order status</th>
-      <th scope="col">Action</th>
+      <th scope="col">Medicine name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Amount</th>
 
   </tr>
   </thead>
   <tbody>
     
-  {% for order in orders %}
+  {% for item in items %}
       <tr>
 
-          <td>{{ order.id }}</td>
-          <td>{{ order.status }}</td>
-          <td><form method="post">{% csrf_token %}
-            <input type="hidden" name = "selected" value="{{order.id}}">
-            <button type="submit" class="btn btn-primary btn-sm">Show Details</button>
-          </form></td>
+          <td>{{ item.product.name }}</td>
+          <td> {{ item.product.price }}</td>
+          <td> {{ item.quantity }} </td>
+          <td> {{ item.total }}</td>
           <td>
 
                   <span class="glyphicon glyphicon-trash"></span>
@@ -40,6 +40,8 @@
   {% endfor %}
   </tbody>
 </table>
+
+<h1>Total: {{ total }}</h1>
     
 
 {% endblock %}
