@@ -15,4 +15,4 @@ class Item(models.Model):
     quantity = models.IntegerField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Cart')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
-    
+    total = models.IntegerField(null=True)

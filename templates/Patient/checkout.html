@@ -18,7 +18,7 @@
       <th scope="col">Medicine name</th>
       <th scope="col">Price</th>
       <th scope="col">Quantity</th>
-      <th scope="col">Shop name</th>
+      <th scope="col">Amount</th>
 
   </tr>
   </thead>
@@ -29,8 +29,8 @@
 
           <td>{{ item.product.name }}</td>
           <td> {{ item.product.price }}</td>
-          <td> <input type="text" class="form-control" name="{{ item.id }}" value="{{item.quantity}}"> </td>
-          <td> {{ item.product.shop.shop_name }}</td>
+          <td> {{ item.quantity }} </td>
+          <td> {{ item.total }}</td>
           <td>
 
                   <span class="glyphicon glyphicon-trash"></span>
@@ -40,7 +40,10 @@
   {% endfor %}
   </tbody>
 </table>
-<button type="submit" class="btn btn-primary btn-sm">Checkout</button>
+<h1>Address:</h1>
+  <input type="text" id="address" name="address" size="500"><br><br><br><br><br><br><br><br><br><br>
+  <h1>Total: {{ total }} </h1>
+<button type="submit" class="btn btn-primary btn-sm">Order now!</button>
       </form>
     
 

@@ -19,6 +19,7 @@ import accounts.views as account_views
 from product.models import *
 from pharmacy.models import *
 from item.models import Item
+from order.models import *
 # Create your views here.
 
 def signup(request):
@@ -321,7 +322,7 @@ def show_products(request, name):
                 selected_item = request.POST.get('selected')
                 patient = Patient.objects.get(id=request.session['patient'])
                 product = Product.objects.get(id=selected_item)
-                items = Item.objects.filter(customer_id=patient.id)
+                items = Item.objects.filter(customer_id=patient.id, status = 'Cart')
                 # print(items[0].product.shop_id)
                 # print(product.shop_id)
                 if len(items) != 0:
@@ -346,12 +347,63 @@ def show_cart(request, name):
     if 'patient' not in request.session:
         return redirect(reverse('main_home'))
     patient = Patient.objects.get(id=request.session['patient'])
-    items = Item.objects.filter(customer_id=patient.id)
+    items = Item.objects.filter(customer_id=patient.id , status='Cart')
     context = {
         'items': items,
         'patient': patient
     }
+
+    if request.method == "POST":
+        for item in items:
+            quantity = request.POST.get(str(item.id))
+            item.quantity = quantity
+            item.total = int(item.quantity)*int(item.product.price)
+            item.save() 
+        return redirect(reverse('patient:checkout', kwargs={'name': patient.first_name}))
+
+
     return render(request, 'Patient/cart.html', context)
+
+
+def checkout(request,name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+    items = Item.objects.filter(customer_id=patient.id, status='Cart')
+    total = 0
+    for item in items:
+        # item.total = int(item.quantity)*int(item.product.price)
+        # item.save()
+        total += item.total
+    context = {
+
+        'items': items,
+        'patient': patient,
+        'total': total
+    }
+    if request.method == "POST":
+        address = request.POST.get('address')
+        if address == '':
+            address = patient.address
+        order = Order(customer=patient, address=address, pharmacy=items[0].product.shop)
+        order.save()
+        for item in items:
+            item.status = 'Order'
+            item.order = order
+            item.save()
+        return redirect(reverse('patient:history', kwargs={'name': patient.first_name}))
+    return render(request, 'Patient/checkout.html', context) 
+
+def history(request,name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+    orders = Order.objects.filter(customer_id=patient.id)
+    context = {
+        'orders': orders,
+        'patient': patient
+    }
+    return render(request, 'Patient/history.html', context)
 
 
 def show_doctor_profile(request, name, chamber_id):

@@ -5,6 +5,8 @@ from django.views.generic import TemplateView
 app_name = 'patient'
 
 urlpatterns = [
+    path('<slug:name>/Checkout/', patient_views.checkout, name='checkout'),
+    path('<slug:name>/History/', patient_views.history, name='history'),
     path('<slug:name>/Pharmacy/', patient_views.show_products, name='show_products'),
     path('<slug:name>/Cart/', patient_views.show_cart, name='show_cart'),
     path('pharmacy-info/', patient_views.test_function, name='show-pharmacy-info'),

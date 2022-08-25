@@ -18,6 +18,3 @@ class Order(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     address = models.CharField(max_length=50)
     pharmacy = models.ForeignKey(Pharmacy, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.Patient.email + " - " + self.status
