@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Patient{% endblock %}
+
+
+{% block nav %}
+{% include 'deliveryman/nav_deliveryman.html' %}
+{% endblock %}
+
+
+{% block registration_form %}
+<h1>Pickup Details:</h1>
+<h3>Shop name: {{ order.pharmacy.shop_name }}</h3>
+<h3>Address: {{ order.pharmacy.address }}</h3>
+<h3>Mobile no: {{ order.pharmacy.mobile_no }}</h3>
+
+<h1>Delivery Details:</h1>
+<h3>Customer name: {{ order.customer.first_name }} {{ order.customer.last_name }}</h3>
+<h3>Address: {{ order.address }}</h3>
+<h3>Mobile no: {{ order.customer.mobile_no }}</h3>
+
+{% endblock %}

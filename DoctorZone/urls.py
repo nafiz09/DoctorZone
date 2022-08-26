@@ -30,6 +30,7 @@ urlpatterns = [
     path('patient/', include('patient.urls', namespace='patient')),
     path('doctor/', include('doctor.urls', namespace='doctor')),
     path('pharmacy/', include('pharmacy.urls', namespace='pharmacy')),
+    path('deliveryman/', include('deliveryman.urls', namespace='deliveryman')),
     path('', accounts.views.landing_home, name='main_home')
 ]
 

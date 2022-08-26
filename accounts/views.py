@@ -8,6 +8,7 @@ from doctor.models import *
 from patient.models import *
 from pharmacy.models import *
 from accounts.models import *
+from deliveryman.models import *
 
 
 def login(request):
@@ -26,6 +27,9 @@ def login(request):
     elif 'pharmacy' in request.session:
         pharmacy = Pharmacy.objects.get(id=request.session['pharmacy'])
         return redirect(reverse('pharmacy:home', kwargs={'name': pharmacy.id}))
+    elif 'deliveryman' in request.session:
+        deliveryman = Deliveryman.objects.get(id=request.session['deliveryman'])
+        return redirect(reverse('deliveryman:home', kwargs={'name': deliveryman.id}))
 
     # if no session alive, show login page
     else:
@@ -58,6 +62,11 @@ def login(request):
                         request.session['pharmacy'] = pharmacy.id
                         print('p')
                         return redirect(reverse('pharmacy:home', kwargs={'name': pharmacy.id}))
+                    elif account.usertype == "Deliveryman":
+                        deliveryman = Deliveryman.objects.get(email=email)
+                        request.session['deliveryman'] = deliveryman.id
+                        print('pain')
+                        return redirect(reverse('deliveryman:home', kwargs={'name': deliveryman.id}))
 
             # if user doesn't exist after querying, error comes, show the home page
             except:
