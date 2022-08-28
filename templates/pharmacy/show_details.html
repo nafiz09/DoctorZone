@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Pharmacy{% endblock %}
+
+
+{% block nav %}
+{% include 'pharmacy/nav_pharmacy.html' %}
+{% endblock %}
+
+
+{% block registration_form %}
+<h3>Order no: {{ order_id }}</h3>
+<h3>Deliveryman Details:</h3>
+<p>Deliveryman name:{{ order.deliveryman.first_name }} {{ order.deliveryman.last_name }}</p>
+<p>Mobile num: {{ order.deliveryman.mobile_no }}</p>
+<table class="table">
+  <thead>
+  <tr>
+      <th scope="col">Medicine name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Amount</th>
+
+  </tr>
+  </thead>
+  <tbody>
+    
+  {% for item in items %}
+      <tr>
+
+          <td>{{ item.product.name }}</td>
+          <td> {{ item.product.price }}</td>
+          <td> {{ item.quantity }} </td>
+          <td> {{ item.total }}</td>
+          <td>
+
+                  <span class="glyphicon glyphicon-trash"></span>
+              </a>
+          </td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h1>Total: {{ total }}</h1>
+    
+
+{% endblock %}

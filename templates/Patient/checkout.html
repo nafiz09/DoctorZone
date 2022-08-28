@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Patient{% endblock %}
+
+
+{% block nav %}
+    {% include 'Patient/Home/nav_patient.html' %}
+{% endblock %}
+
+
+{% block registration_form %}
+<form method="post">{% csrf_token %}
+<table class="table">
+  <thead>
+  <tr>
+      <th scope="col">Medicine name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Amount</th>
+
+  </tr>
+  </thead>
+  <tbody>
+    
+  {% for item in items %}
+      <tr>
+
+          <td>{{ item.product.name }}</td>
+          <td> {{ item.product.price }}</td>
+          <td> {{ item.quantity }} </td>
+          <td> {{ item.total }}</td>
+          <td>
+
+                  <span class="glyphicon glyphicon-trash"></span>
+              </a>
+          </td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<h1>Address:</h1>
+  <input type="text" id="address" name="address" size="500"><br><br><br><br><br><br><br><br><br><br>
+  <h1>Total: {{ total }} </h1>
+<button type="submit" class="btn btn-primary btn-sm">Order now!</button>
+      </form>
+    
+
+{% endblock %}
