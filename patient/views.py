@@ -2,7 +2,7 @@ import random
 from datetime import date
 from datetime import timedelta
 
-from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 import datetime
 
 from django.http import JsonResponse
@@ -348,7 +348,7 @@ def show_products(request, name):
                         return render(request, 'Patient/products.html', context)
                 quantity = 1
                 status = 'Cart'
-                order = NULL
+                order = None
                 item = Item(customer=patient, product=product, quantity=quantity, status=status)
                 item.save()
 

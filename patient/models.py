@@ -26,8 +26,8 @@ class Patient(models.Model):
     address = models.CharField(max_length=50)
     password = models.CharField(max_length=20, default="")
 
-    blood_group = models.CharField(max_length=4, choices=BLOODGROUP_CHOICES, null=True, blank=True)
-    height = models.CharField(max_length=10, null=True, blank=True)
+    # blood_group = models.CharField(max_length=4, choices=BLOODGROUP_CHOICES, null=True, blank=True)
+    # height = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.email
