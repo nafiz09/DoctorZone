@@ -102,10 +102,13 @@
 {#                                        <li><a href="{% url 'patient:edit:profile' patient.first_name %}"> EDIT PROFILE</a></li>#}
                                         <li><a href="{% url 'patient:show_profile' patient.first_name %}"> SHOW PROFILE</a></li>
                                         <li><a href="{% url 'patient:show_appointments' patient.first_name %}"> SHOW APPOINTMENTS</a></li>
+                                        <li><a href="{% url 'patient:history' patient.first_name %}"> ORDER HISTORY </a></li>
 
                                     </ul>
                                 </li>
-
+                                <li><a href="{% url 'patient:show_cart' patient.first_name %}"><img src="{% static 'img/cart.png' %}" alt="Girl in a jacket" width="25" height="25"></a></li>
+                                <li></li>
+                                <li></li>
                             </ul>
 
                         </div>

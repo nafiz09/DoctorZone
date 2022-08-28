@@ -546,6 +546,7 @@ def show_profile(request, name):
     return render(request, 'Doctor/Home/show_profile.html', context)
 
 
+
 def show_patient_profile(request, name, patient_id):
     if 'doctor' not in request.session:
         return redirect(reverse('main_home'))
@@ -950,6 +951,8 @@ def start_todays_appointments(request, name, chamber_id):
 
 
 
+
+#
 # def show_profile_public(request, name, patient_id):
 #     if 'doctor' not in request.session:
 #         return redirect(reverse('main_home'))

@@ -1,6 +1,9 @@
+
 import random
 from datetime import date
 from datetime import timedelta
+from asyncio.windows_events import NULL
+import datetime
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -13,6 +16,10 @@ from product.models import *
 from . import sending_email as mail
 from .models import *
 from fpdf import FPDF
+
+from pharmacy.models import *
+from item.models import Item
+from order.models import *
 
 # Create your views here.
 
@@ -316,12 +323,115 @@ def show_products(request, name):
 
     context = {
         'products': products,
-        'patient': patient
+        'patient': patient,
+        'message': ''
     }
     print("haha")
     print(context)
     print("haha1")
+    if request.method == "POST":
+            if request.POST.get('selected'):
+                selected_item = request.POST.get('selected')
+                patient = Patient.objects.get(id=request.session['patient'])
+                product = Product.objects.get(id=selected_item)
+                items = Item.objects.filter(customer_id=patient.id, status = 'Cart')
+                # print(items[0].product.shop_id)
+                # print(product.shop_id)
+                if len(items) != 0:
+                    if items[0].product.shop_id != product.shop_id:
+                        print("not allowed")
+                        context['message'] = "You cannot buy from different pharmacies"
+                        return render(request, 'Patient/products.html', context)
+                for item in items:
+                    if item.product.id == product.id:
+                        # print("already in cart")
+                        context['message'] = "You already have this item in your cart"
+                        return render(request, 'Patient/products.html', context)
+                quantity = 1
+                status = 'Cart'
+                order = NULL
+                item = Item(customer=patient, product=product, quantity=quantity, status=status)
+                item.save()
+
     return render(request, 'Patient/products.html', context)
+
+
+def show_cart(request, name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+    items = Item.objects.filter(customer_id=patient.id , status='Cart')
+    context = {
+        'items': items,
+        'patient': patient
+    }
+
+    if request.method == "POST":
+        for item in items:
+            quantity = request.POST.get(str(item.id))
+            item.quantity = quantity
+            item.total = int(item.quantity)*int(item.product.price)
+            item.save() 
+        return redirect(reverse('patient:checkout', kwargs={'name': patient.first_name}))
+
+
+    return render(request, 'Patient/cart.html', context)
+
+
+def checkout(request,name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+    items = Item.objects.filter(customer_id=patient.id, status='Cart')
+    total = 0
+    for item in items:
+        # item.total = int(item.quantity)*int(item.product.price)
+        # item.save()
+        total += item.total
+    context = {
+
+        'items': items,
+        'patient': patient,
+        'total': total
+    }
+    if request.method == "POST":
+        address = request.POST.get('address')
+        if address == '':
+            address = patient.address
+        order = Order(customer=patient, address=address, pharmacy=items[0].product.shop)
+        order.save()
+        for item in items:
+            item.status = 'Order'
+            item.order = order
+            item.save()
+        return redirect(reverse('patient:history', kwargs={'name': patient.first_name}))
+    return render(request, 'Patient/checkout.html', context) 
+
+def history(request,name):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+    orders = Order.objects.filter(customer_id=patient.id)
+    context = {
+        'orders': orders,
+        'patient': patient
+    }
+    if request.method == "POST":
+        order_id = request.POST.get('selected')
+        order = Order.objects.get(id=order_id)
+        items = Item.objects.filter(order_id=request.POST.get('selected'))
+        total = 0
+        for item in items:
+            total += item.total
+        c = {
+            'order': order,
+            'order_id': order_id,
+            'patient': patient,
+            'items': items,
+            'total': total
+        }
+        return render(request, 'Patient/show_details.html', c)
+    return render(request, 'Patient/history.html', context)
 
 
 def show_doctor_profile(request, name, chamber_id):
