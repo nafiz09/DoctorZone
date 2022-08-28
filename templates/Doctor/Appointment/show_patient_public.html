@@ -1,24 +1,51 @@
 {% extends 'base.html' %}
 
 {% block nav %}
-    {% include 'nav.html' %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
 {% endblock %}
 
-
-{% block registration_form %}
+{% block content %}
     <div class="container ">
         <div class="wrapper wrapper--w680">
             <div class="card card-4">
                 <div class="card-body">
-                    <h2 class="title">Patient's basic info</h2>
-                        <div class="row row-space">
-                            <div class="col-2">
-                                <h5> Consultant : {{ app }} </h5>
-                            </div>
-                            <div class="col-2">
-                                <h5> Patient's Birthday: {{ patient.birthday}} </h5>
-                            </div>
+                    <h2 class="title"><b>Profile of <b> {{ patient.first_name }} {{ patient.last_name }}</b> </b></h2>
+
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Birthday</b></h4>
+                            <p>{{ patient.birthday }}</p>
                         </div>
+                        <div class="col-2">
+                            <h4><b>Gender</b></h4>
+                            <p>{{ patient.gender }}</p>
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Email</b></h4>
+                            <p>{{ patient.email }}</p>
+                        </div>
+                        <div class="col-2">
+                            <h4><b>Contact No</b></h4>
+                            <p>{{ patient.mobile_no }}</p>
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <h4><b>Address</b></h4>
+                            <p>{{ patient.address }}</p>
+                        </div>
+
+                        <div class="col-2">
+                            <form method="POST" action="{% url 'doctor:show_patient_appointments' doctor.id patient.id %}">
+                                {% csrf_token %}
+                                <div class="p-t-15">
+                                    <button class="btn btn--radius-2 btn--blue" type="submit">See Preescription</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -32,7 +32,8 @@
                                 <h6>
                                     <a href="{% url 'doctor:edit_chamber' doctor.first_name chamber.chamber_id %}" class="btn btn-primary">
                                         <button>
-                                            Edit This Chamber {{ chamber.chamber_id }}
+{#                                            Edit This Chamber {{ chamber.chamber_id }}#}
+                                            Edit This Chamber
                                         </button>
                                     </a>
                                 </h6>
@@ -40,9 +41,30 @@
                                 <h6>
                                     <a href="{% url 'doctor:show_appointments_chamber' doctor.first_name chamber.chamber_id %}" class="btn btn-primary">
                                         <button>
-                                            Show Appointments {{ chamber.chamber_id }}
+{#                                            Show Appointments {{ chamber.chamber_id }}#}
+                                            Show Appointments
                                         </button>
                                     </a>
+                                </h6>
+                                <br>
+
+                                <h6>
+                                    <a href="{% url 'doctor:start_todays_appointment' doctor.first_name chamber.chamber_id %}" class="btn btn-primary">
+                                        <button>
+                                            Start Today's Appointments
+                                        </button>
+                                    </a>
+
+                                </h6>
+                                <br>
+                                <h6>
+                                    <a href="{% url 'doctor:show_completed_appointments' doctor.first_name chamber.chamber_id %}" class="btn btn-primary">
+                                        <button>
+{#                                            Show Archived Appointments {{ chamber.chamber_id }}#}
+                                            Show Archived Appointments
+                                        </button>
+                                    </a>
+
                                 </h6>
 
                             </div>

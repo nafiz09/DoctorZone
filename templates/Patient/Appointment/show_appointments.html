@@ -28,13 +28,14 @@
                                     <h5 class="card-title"> {{ appointment.state }} </h5>
 
                                     <p class="card-text">description : demo description </p>
-                                    <a href="#" class="btn btn-primary">
-                                        {#                                        <a href="#" class="btn btn-primary">#}
-                                        Button</a>
+                                    {% if appointment.state == 'Completed' %}
+                                        <a href="{% url 'patient:show_prescription' patient.first_name appointment.id %}" class="btn btn-primary">
 
-                                    <a href="#" class="btn btn-primary">
-                                        {#                                        <a href="#" class="btn btn-primary">#}
-                                        BUtton 2</a>
+                                            Show Prescription</a>
+                                    {% endif %}
+{#                                    <a href="#" class="btn btn-primary">#}
+{#                                     #}
+{#                                        Button 2</a>#}
                                 </div>
                             {% endfor %}
                         </div>

@@ -11,7 +11,7 @@
             <div class="card card-4">
                 <div class="card-body">
                     <h2 class="title">Prescription Modification Form</h2>
-                    <form method="POST" action="{% url 'doctor:prescription' doctor.first_name %}">
+                    <form method="POST" action="{% url 'doctor:customize_prescription' doctor.first_name %}">
 
                         {% for field in prescriptionFields %}
                             <div class="row row-space">

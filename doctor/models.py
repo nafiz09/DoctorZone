@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 # Create your models here.
@@ -32,7 +34,7 @@ class Doctor(models.Model):
     license_no = models.CharField(max_length=10)
     specialist = models.CharField(max_length=20)
     verified = models.CharField(max_length=10, choices=VERIFICATION_CHOICES)
-    prescriptionFields = models.CharField(max_length=250, default='NAME#AGE#SEX')
+    prescriptionFields = models.CharField(max_length=250, default='NAME#AGE#SEX#PROBLEM DESCRIPTION#DIAGNOSIS#TEST')
 
     def __str__(self):
         return self.first_name + " " + self.email
@@ -41,8 +43,8 @@ class Doctor(models.Model):
 class DegreeOfDoctor(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     degree_name = models.CharField(max_length=20)
-    institute = models.CharField(max_length=30)
-    degree_date = models.DateField(null=True)
+    institute = models.CharField(max_length=30, blank=True)
+    degree_date = models.DateField(blank=True, null=True)
 
 
 class Chamber(models.Model):
@@ -76,7 +78,7 @@ class Chamber(models.Model):
     max_capacity = models.IntegerField(default=3)
 
     def __str__(self):
-        return self.address
+        return 'Doctor' + self.doctor.first_name + ' ' + self.address
 
 
 class Appointment(models.Model):
@@ -89,6 +91,12 @@ class Appointment(models.Model):
     chamber = models.ForeignKey(Chamber, on_delete=models.CASCADE)
     date = models.DateField()
     state = models.CharField(max_length=10, default='Requested', choices=STATE_CHOICES)
+    otp = models.IntegerField(null=True, blank=True, default=1111)
+    prescription = models.CharField(max_length=500, blank=True, null=True)
+
+    def __str__(self):
+        return 'Doctor' + self.chamber.doctor.first_name + ' ' + 'Patient' + self.patient.first_name + ' ' + self.state
+
 #
 # class PrescriptionType(models.Model):
 # #     there will be a apoointment id attached to it.

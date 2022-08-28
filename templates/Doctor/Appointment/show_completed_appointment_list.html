@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Doctor{% endblock %}
+
+{% block nav %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
+{% endblock %}
+
+{% block card_chamber %}
+
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">{{ patient.first_name }}'s Appointments with Dr. {{ doctor.first_name }}</h2>
+
+                    {% for appointment in Appointments %}
+                        <div class="card text-center" style="width: 35rem;">
+                            <div class="card-body">
+                                <a href="{% url 'doctor:show_completed_prescription' doctor.first_name appointment.id %}">
+                                    {{ appointment.date }} {{ appointment.chamber.address }}
+                                </a>
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

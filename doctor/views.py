@@ -429,9 +429,10 @@ def show_appointments_chamber(request, name, chamber_id):
         return redirect(reverse('main_home'))
     doctor = Doctor.objects.get(id=request.session['doctor'])
     chamber = Chamber.objects.get(id=chamber_id)
-    appointment_data = Appointment.objects.filter(chamber=chamber, date__gte=date.today())
+    appointment_data = Appointment.objects.filter(state='Requested', chamber=chamber, date__gte=date.today())
+    print('appointment data')
     print(appointment_data)
-    distinct_date = Appointment.objects.filter(chamber=chamber, date__gte=date.today()).values('date').distinct()
+    distinct_date = Appointment.objects.filter(chamber=chamber, date__gte=date.today(), state='Requested').values('date').distinct()
     dates = []
     date_appmntList_dict = {}
     for data in distinct_date:
@@ -448,7 +449,8 @@ def show_appointments_chamber(request, name, chamber_id):
                 dict = {
                     'patient': in_data.patient.first_name + " " + in_data.patient.last_name,
                     'description': description,
-                    'patient_id': patient.id
+                    'patient_id': patient.id,
+                    'appointment_id': in_data.id
                 }
                 appmntList.append(dict)
                 dict = {}
@@ -497,12 +499,17 @@ def customize_prescription(request, name):
         # presType.append('#'+request.POST['add_field'])
         presType = doctor.prescriptionFields
         presFields = presType.split("#")
+        non_delete_fields = ['NAME', 'AGE', 'SEX', 'PROBLEM DESCRIPTION', 'DIAGNOSIS', 'TEST', 'MEDICINE DOSAGE DESCRIPTION']
 
         if request.POST['delete_field'] != '':
-            if request.POST['delete_field'] in presFields:
-                presFields.remove(request.POST['delete_field'])
+            delete_field = upper(request.POST['delete_field'])
+            if delete_field not in non_delete_fields and delete_field in presFields:
+                presFields.remove(delete_field)
         if request.POST['add_field'] != '':
-            presFields.append(upper(request.POST['add_field']))
+            add_field = upper(request.POST['add_field'])
+            if add_field not in non_delete_fields:
+                presFields.append(add_field)
+
         presType = ''
         i = 0
         for field in presFields:
@@ -539,8 +546,410 @@ def show_profile(request, name):
     return render(request, 'Doctor/Home/show_profile.html', context)
 
 
+def show_patient_profile(request, name, patient_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+    doctor = Doctor.objects.get(id=request.session['doctor'])
 
-#
+    patient = Patient.objects.get(id=patient_id)
+
+    context = {
+        'patient': patient,
+        'doctor': doctor,
+    }
+    return render(request, 'Doctor/Appointment/show_patient_public.html', context)
+
+
+def age(birthdate):
+    today = date.today()
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age
+
+
+def input_OTP(request, name, appointment_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    appointment = Appointment.objects.get(id=appointment_id)
+
+    patient = Patient.objects.get(id=appointment.patient.id)
+
+    if request.method == 'POST':
+        input_otp = request.POST['otp']
+        if int(appointment.otp) == int(input_otp):
+            print("verification done")
+            return redirect(reverse('doctor:write_prescription', kwargs={'name': doctor.first_name, 'appointment_id': appointment_id}))
+        else:
+            chamber_id = appointment.chamber.id
+            return redirect(reverse('doctor:show_appointments_chamber', kwargs={'name': doctor.first_name, 'chamber_id': chamber_id}))
+    context = {
+        'patient': patient,
+        'doctor': doctor,
+        'appointment_id': appointment_id
+    }
+
+    return render(request, 'Doctor/Appointment/input_OTP.html', context)
+
+
+def write_prescription(request, name, appointment_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    appointment = Appointment.objects.get(id=appointment_id)
+    patient = appointment.patient
+
+#   default='NAME#AGE#SEX#PROBLEM DESCRIPTION#DIAGNOSIS#TEST'
+
+#   medicine dosage diagnosis
+
+    print(doctor.prescriptionFields.split('#'))
+    presFields = doctor.prescriptionFields.split('#')
+
+    presValues = {}
+    presValues['NAME'] = patient.first_name+' '+patient.last_name
+    presValues['SEX'] = patient.gender
+    presValues['AGE'] = age(patient.birthday)
+    # presValues['PROBLEM DESCRIPTION'] = ''
+    # presValues['DIAGNOSIS'] = ''
+    # presValues['TEST'] = ''
+
+
+    context = {
+        'patient': patient,
+        'doctor': doctor,
+        'patient_age': age(patient.birthday),
+        'Prescription_Fields': presFields[6:],  #exclude name, sex and age
+        'appointment_id': appointment_id
+    }
+
+    print('prescription context')
+    print(context)
+
+    if request.method == 'POST':
+        print(request.POST)
+        presValues['PROBLEM DESCRIPTION'] = request.POST['problem_description']
+        presValues['DIAGNOSIS'] = request.POST['diagnosis']
+
+        test_list = []
+        if request.POST['test'] != '':
+            test_list.append(request.POST['test'])
+        variable = 'test_'
+        i = 1
+        var = variable+str(i)
+        # print(request.POST.get('test_3', 'hahaha'))
+        new_test = request.POST.get(var, '')
+        while new_test != '':
+            test_list.append(new_test)
+            i = i + 1
+            var = variable + str(i)
+            new_test = request.POST.get(var, '')
+
+        test_string = ''
+        for i in range(0, len(test_list)):
+            if i != (len(test_list)-1):
+                test_string = test_string + test_list[i] + '$'
+            else:
+                test_string = test_string + test_list[i]
+        print('test_string')
+        print(test_string)
+        presValues['TEST'] = test_string
+        #test string done alright
+
+        medicine_list = []
+        dose_list = []
+        med_des_list = []
+        variable_med = 'medicine'
+        variable_dose = 'dosage'
+        variable_des = 'description'
+        i = 1
+        var_med = variable_med + str(i)
+        var_dose = variable_dose + str(i)
+        var_des = variable_des + str(i)
+        new_med = request.POST.get(var_med, '')
+
+        while new_med != '':
+            medicine_list.append(new_med)
+            new_dose = request.POST.get(var_dose, '')
+            dose_list.append(new_dose)
+            new_des = request.POST.get(var_des, '')
+            med_des_list.append(new_des)
+            i = i + 1
+            var_med = variable_med + str(i)
+            var_dose = variable_dose + str(i)
+            var_des = variable_des + str(i)
+            new_med = request.POST.get(var_med, '')
+
+        medicine_string = ''
+        for i in range(0, len(medicine_list)):
+            each_med_all = medicine_list[i] + '%' + dose_list[i] + '%' + med_des_list[i]
+
+            if i != (len(medicine_list)-1):
+                medicine_string = medicine_string + each_med_all + '$'
+            else:
+                medicine_string = medicine_string + each_med_all
+
+        print('medicine string')
+        print(medicine_string)
+        presValues['MEDICINE DOSAGE DESCRIPTION'] = medicine_string
+        presFields_extra = presFields[7:]
+
+        for field in presFields_extra:
+            presValues[field] = request.POST.get(field, '')
+
+        prescription = ''
+        for key, value in presValues.items():
+            print(str(key) + '--->' +str(value))
+            prescription = prescription + str(key) + '&' + str(value) + '#'
+
+        prescription = prescription[:-1]
+        print('full prescription')
+        print(prescription)
+        appointment.prescription = prescription
+        appointment.save()
+        #alhamdulillah done
+        context = {
+            'Prescription': prescriptionToDict(appointment_id),
+            'doctor': doctor,
+            'patient': patient,
+            'appointment_id': appointment_id
+        }
+        return render(request, 'Doctor/Appointment/show_prescription.html', context)
+
+    return render(request, 'Doctor/Appointment/write_prescription.html', context)
+
+
+def prescriptionToDict(appointment_id):
+    prescription = Appointment.objects.get(id=appointment_id).prescription
+
+    prescription_list = prescription.split('#')
+    Dict = {}
+    doctor = Appointment.objects.get(id=appointment_id).chamber.doctor
+    # value = 'Dr.' + str(doctor.first_name) + ' ' + str(doctor.last_name) + '\n'+str(doctor.specialist)+'\n'
+    degrees = DegreeOfDoctor.objects.filter(doctor_id=doctor.id)
+
+    doc_info_list = []
+    doc_info_list.append('Dr.' + str(doctor.first_name) + ' ' + str(doctor.last_name))
+    doc_info_list.append(str(doctor.specialist))
+
+    for degree in degrees:
+        doc_info_list.append(str(degree.degree_name) + ', ' + str(degree.institute) + ', ' + str(degree.degree_date))
+        # value = value + str(degree.degree_name) + ', ' + str(degree.institute) + ', ' + str(degree.degree_date) + '\n'
+
+    Dict['DOCTOR'] = doc_info_list
+    Dict['DATE'] = str(Appointment.objects.get(id=appointment_id).date)
+
+    for i in range(0, len(prescription_list)):
+        key_value = prescription_list[i]
+        key_value = key_value.split('&')
+        key = key_value[0]
+        value = key_value[1]
+        if key == 'TEST':
+            tests_list = value.split('$')
+            Dict[key] = tests_list
+            continue
+            # for test in tests_list:
+            #     value = str(j) + '. ' + value + str(test)+'\n'  #1. RBC\n
+        elif key == 'MEDICINE DOSAGE DESCRIPTION':
+            meds_list = value.split('$')
+            print('meds_list')
+            print(meds_list)
+            # value = ''
+            med_dicts_list = []
+            for med in meds_list:
+                med_dosage_des = med.split('%')
+                print('med_dosage_des')
+                print(med_dosage_des)
+                print('len(med_dosage_des)')
+                print(len(med_dosage_des))
+                if med_dosage_des[0] == '':
+                    print('No medicine added')
+                    continue
+                med_dict = {}
+                med_dict['medicine'] = med_dosage_des[0]
+                med_dict['dosage'] = med_dosage_des[1]
+                med_dict['description'] = med_dosage_des[2]
+                med_dicts_list.append(med_dict)
+                # value = value + str(j) + '. '+str(med_dosage_des[0]) + '-----' + str(med_dosage_des[1]) +\
+                #         '----' + str(med_dosage_des[2]) + '\n'
+
+            Dict['MEDICINE DOSAGE DESCRIPTION'] = med_dicts_list
+            continue
+        Dict[key] = value
+
+    print(Dict)
+    return Dict
+
+
+def end_meeting(request, name, appointment_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    appointment = Appointment.objects.get(id=appointment_id)
+    patient = appointment.patient
+    chamber_id = appointment.chamber_id
+
+    appointment.state = 'Completed'
+    appointment.save()
+
+    return redirect(reverse('doctor:show_appointments_chamber', kwargs={'name': doctor.first_name, 'chamber_id': chamber_id}))
+
+
+def show_completed_appointments(request, name, chamber_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    chamber = Chamber.objects.get(id=chamber_id)
+    appointment_list = Appointment.objects.filter(chamber=chamber, state='Completed').order_by('date')
+    print('appointment_list')
+    print(appointment_list)
+    distinct_date = Appointment.objects.filter(chamber=chamber, state='Completed').values('date').distinct()
+    print('distimct_date')
+    for date in distinct_date:
+        print(date)
+    dates = []
+    date_appmntList_dict = {}
+    for data in distinct_date:
+        dates.append(str(data['date']))
+        description = "some problem. demo problem statement"
+        appmntList = []
+        dict = {}
+        for in_data in appointment_list:
+            print("checking print1 " + str(in_data.date))
+            print("checking print2 " + str(data['date']))
+            if str(in_data.date) == str(data['date']):
+                patient = Patient.objects.get(id=in_data.patient.id)
+                print("name : " + in_data.patient.first_name + " " + in_data.patient.last_name)
+                dict = {
+                    'patient': in_data.patient.first_name + " " + in_data.patient.last_name,
+                    'patient_id': patient.id,
+                    'appointment_id': in_data.id
+                }
+                appmntList.append(dict)
+                dict = {}
+        date_appmntList_dict[str(data['date'])] = appmntList
+    # print(distinct_date)
+    print('date appmnt dict list')
+    print(date_appmntList_dict)
+    print(dates)
+    appointments = []
+    for data in appointment_list:
+        patient = Patient.objects.get(id=data.patient.id)
+        dict = {
+            'patient': patient.first_name + " " + patient.last_name,
+            'patient_id': patient.id,
+            'date': str(data.date)
+            # 'dates': dates   # dates in which there are appointment
+        }
+        print("printing dict")
+        print(dict)
+        appointments.append(dict)
+    print()
+    context = {
+        'doctor': doctor,
+        'chamber': chamber,
+        'appointments': date_appmntList_dict,
+        'dates': dates  # distinct date list
+    }
+    print("printing context")
+    print(context)
+    return render(request, 'Doctor/Appointment/show_completed_appointments.html', context)
+
+
+def show_completed_prescription(request, name, appointment_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    patient = Appointment.objects.get(id=appointment_id).patient
+
+    context = {
+        'Prescription': prescriptionToDict(appointment_id),
+        'doctor': doctor,
+        'patient': patient,
+        'appointment_id': appointment_id
+    }
+
+    return render(request, 'Doctor/Appointment/show_completed_prescription.html', context)
+
+
+def show_patient_appointments(request, name, patient_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    patient = Patient.objects.get(id=patient_id)
+
+    # chambers_of_doctor = Chamber.objects.filter(doctor=doctor)
+    # appointment_list = Appointment.objects.filter(patient=patient, state='Completed').order_by('date').values()
+    # print('appointment_list')
+    # print(appointment_list)
+    # app_list = []
+    # for app in appointment_list:
+    #     checker = False
+    #     for chamber in chambers_of_doctor:
+    #         if str(chamber.id) == str(app['chamber_id']):
+    #             checker = True
+    #             app_list.append(app)
+    #             break
+
+    app_list = Appointment.objects.filter(patient=patient,chamber__doctor=doctor , state='Completed').order_by('date').values()
+    print('app_list')
+    print(app_list)
+
+    context = {
+        'Appointments': app_list,
+        'doctor': doctor,
+        'patient': patient
+    }
+
+    return render(request, 'Doctor/Appointment/show_completed_appointment_list.html', context)
+
+
+def start_todays_appointments(request, name, chamber_id):
+    if 'doctor' not in request.session:
+        return redirect(reverse('main_home'))
+
+    doctor = Doctor.objects.get(id=request.session['doctor'])
+    chamber = Chamber.objects.get(id=chamber_id)
+    appointments = Appointment.objects.filter(chamber=chamber, state='Requested', date=date.today())
+
+    # cham_appmntlist_list = []
+    #
+    # for each_chamber in chambers:
+    #     dict = { }
+    #
+    #     list = []
+    #     for app in appointments:
+    #         if app.chamber_id == each_chamber.id:
+    #             list.append(app)
+    #
+    #     cham_appmntlist_list.append(list)
+    #
+    # print('cham appmnt list lsit')
+    # print(cham_appmntlist_list)
+    print('chamer id')
+    print(chamber_id)
+    print('today date')
+    print(str(date.today()))
+    print('today appointments')
+    print(len(appointments))
+    for app in appointments:
+        print(str(app.date))
+
+    context = {
+        'Appointments': appointments,
+        'doctor': doctor,
+        'chamber': chamber
+    }
+
+    return render(request, 'Doctor/Appointment/todays_appointments.html', context)
+
+
+
 # def show_profile_public(request, name, patient_id):
 #     if 'doctor' not in request.session:
 #         return redirect(reverse('main_home'))

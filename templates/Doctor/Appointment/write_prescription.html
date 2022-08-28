@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Doctor{% endblock %}
+
+{% block nav %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Prescription</h2>
+                    <form method="POST" action="{% url 'doctor:write_prescription' doctor.first_name appointment_id %}">
+                        {% csrf_token %}
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <h4><b>Name</b></h4>
+                                <p>{{ patient.first_name }} {{ patient.last_name }} </p>
+                            </div>
+                            <div class="col-2">
+                                <h4><b>Sex</b></h4>
+                                <p> {{ patient.gender }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <h4><b>Address</b></h4>
+                                <p>{{ patient.address }} </p>
+                            </div>
+                            <div class="col-2">
+                                <h4><b>Age</b></h4>
+                                <p> {{ patient_age }} </p>
+                            </div>
+                        </div>
+
+
+                        <div class="row row-space">
+                            <div class="input-group">
+                                <h4><b><label class="label">PROBLEM DESCRIPTION</label></b></h4>
+                                <input class="input--style-4" type="text" name="problem_description">
+                            </div>
+                        </div>
+
+                        <div class="row row-space">
+                            <div class="input-group">
+                                <h4><b><label class="label">DIAGNOSIS</label></b></h4>
+                                <input class="input--style-4" type="text" name="diagnosis">
+                            </div>
+                        </div>
+
+
+                        <div class="row row-space">
+                            <div class="test-multiple" id="test-multiple">
+                                <div class="input-group">
+                                    <h4><b><label class="label">TEST</label></b></h4>
+                                    <input class="input--style-4" type="text" name="test">
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn--radius-2 btn--blue" type="button" id="btn-test-id">
+                                    Add Test
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <div class="row row-space">
+                            {% for field in Prescription_Fields %}
+                                {#                                <div class="col-2">#}
+                                <div class="input-group">
+                                    <h4><b><label class="label">{{ field }}</label></b></h4>
+                                    <input class="input--style-4" type="text" name="{{ field }}" >
+
+                                </div>
+                                {#                                </div>#}
+                            {% endfor %}
+                        </div>
+                        <br>
+
+                        <div class="medicine-dosage-description" id="medicine-dosage-description">
+
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn--radius-2 btn--blue" type="button" id="add-element">
+                                Add Medicine
+                            </button>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                        </div>
+
+
+                        {#                        <div class="p-t-15 text-center">#}
+                        {#                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>#}
+                        {#                        </div>#}
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+
+    <script>
+
+        let init_element = ""
+        let id_test_multiple = 1
+        let id_count = 1
+        $('#add-element').click(function () {
+
+            init_element += '<div class="row row-space">'
+                + '<div class="col-3">'
+                + '<div class="input-group">'
+                + '<h4><b><label class="label">Medicine</label></b></h4>'
+                + '<input class="input--style-4" type="text" name="medicine' + id_count + '" >'
+                + '</div>'
+                + '</div>'
+
+                + '<div class="col-3">'
+                + '<div class="input-group">'
+                + '<h4><b><label class="label">Dosage</label></b></h4>'
+                + '<input class="input--style-4" type="text" name="dosage' + id_count + '" >'
+                + '</div>'
+                + '</div>'
+
+                + '<div class="col-3">'
+                + '<div class="input-group">'
+                + '<h4><b><label class="label">Description</label></b></h4>'
+                + '<input class="input--style-4" type="text" name="description' + id_count + '" >'
+                + '</div>'
+                + '</div>'
+                + '</div>'
+
+            document.getElementById('medicine-dosage-description').innerHTML = init_element
+
+            id_count++
+
+            console.log("button pressed here")
+
+        });
+
+        $('#btn-test-id').click(function () {
+
+            let init_test_multiple = document.getElementById('test-multiple').innerHTML
+
+            console.log('here it is')
+
+            init_test_multiple += '<div class="input-group">'
+                + '<h4><b><label class="label">TEST</label></b></h4>'
+                + '<input class="input--style-4" type="text" name="test_' + id_test_multiple + '" >'
+                + '</div>'
+
+
+            document.getElementById('test-multiple').innerHTML = init_test_multiple
+            id_test_multiple++
+
+        });
+
+
+    </script>
+
+
+{% endblock %}

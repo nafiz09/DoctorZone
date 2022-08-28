@@ -1,23 +1,22 @@
-import datetime
+import random
+from datetime import date
+from datetime import timedelta
 
 from django.http import JsonResponse
-from django.urls import reverse
 from django.shortcuts import render, redirect
-from .models import *
-from datetime import date, timedelta
-from django.utils import timezone
+from django.urls import reverse
+
+import doctor.views as doctor_views
 from accounts.models import *
 from doctor.models import *
-import doctor.views as doctor_views
-import accounts.views as account_views
-from django.shortcuts import render, redirect
-from .models import *
-from datetime import date
-from accounts.models import *
-import accounts.views as account_views
 from product.models import *
-from pharmacy.models import *
+from . import sending_email as mail
+from .models import *
+from fpdf import FPDF
+
 # Create your views here.
+
+#vtegsddhttsalowy
 
 def signup(request):
     if request.method == "POST":
@@ -111,6 +110,15 @@ def take_appointment(request, name, chamber_id):
 
     patient = Patient.objects.get(id=request.session['patient'])
     chamber = Chamber.objects.get(id=chamber_id)
+
+    chamber = Chamber.objects.get(id=chamber_id)
+    appointment_dates = produce_valid_dates(chamber)  # str valid dates
+    appointment_details = []
+    # time can be calculated
+    for date in appointment_dates:
+        serial = len(Appointment.objects.filter(date=date, chamber_id=chamber_id))
+        appointment_details.append(date + "  ---------  Serial no : " + str(serial + 1))
+
     if request.method == 'POST':
         print(request.POST)
         msg = request.POST['Date_Radio']
@@ -119,17 +127,16 @@ def take_appointment(request, name, chamber_id):
         msg = msg[0]
         app_date = datetime.datetime.strptime(msg, '%Y-%m-%d').date()
         print(app_date)
-        appointment = Appointment(patient=patient, chamber=chamber, date=app_date)
+        otp = random.randint(1000, 9999)
+
+        appointment = Appointment(patient=patient, chamber=chamber, date=app_date, otp=otp)
+
+        mail.send_email(appointment)
+
         appointment.save()
+
         return redirect(reverse('patient:home', kwargs={'name': patient.first_name}))
 
-    chamber = Chamber.objects.get(id=chamber_id)
-    appointment_dates = produce_valid_dates(chamber) #str valid dates
-    appointment_details = []
-    # time can be calculated
-    for date in appointment_dates:
-        serial = len(Appointment.objects.filter(date=date, chamber_id=chamber_id))
-        appointment_details.append(date + "  ---------  Serial no : " + str(serial+1))
 
     context = {
         'appointment_dates': appointment_details,
@@ -250,6 +257,7 @@ def show_appointments(request, name):
         dic = {}
         print("inside")
         print(app.date)
+        dic['id'] = str(app.id)
         dic['date'] = str(app.date)
         dic['chamber_id'] = str(app.chamber_id)
         print(app.chamber_id)
@@ -349,3 +357,89 @@ def show_profile(request, name):
 def test_function(request):
     print("inside test function")
     return JsonResponse({})
+
+
+from doctor.views import prescriptionToDict
+
+
+def show_prescription(request, name, appointment_id):
+    if 'patient' not in request.session:
+        return redirect(reverse('main_home'))
+    patient = Patient.objects.get(id=request.session['patient'])
+
+    appointment = Appointment.objects.get(id=appointment_id)
+
+    context = {
+        'appointment_id': appointment_id,
+        'patient': patient,
+        'Prescription': prescriptionToDict(appointment_id)
+    }
+
+    if request.method == "POST":
+        convertPDF(appointment_id)
+
+    return render(request, 'Patient/Appointment/show_prescription.html', context)
+
+
+def convertPDF(appointment_id):
+    pres_dict = prescriptionToDict(appointment_id)
+
+    print('inside convert pdf')
+    print(pres_dict)
+
+    pdf = FPDF()
+
+    pdf.add_page()
+
+    line_len = 150
+    line_wid = 8
+
+    pdf.set_font('Arial', 'B', size=20)
+
+    pdf.cell(line_len, 14, txt='A DOCKZONE Service', ln=1, align='C')
+    pdf.cell(line_len, 14, txt='Prescription', ln=2, align='C')
+    pdf.cell(line_len, 14, txt='---------------------------------------------------------------', ln=2, align='C')
+
+    line = 3
+    a = 'L'
+    pdf.set_font('Arial', size=14)
+
+    for key, value in pres_dict.items():
+        pdf.set_font('Arial', 'B', size=16)
+        pdf.cell(line_len, line_wid, txt=key, ln=line, align=a)
+        pdf.set_font('Arial', size=15)
+        line += 1
+        if key == 'DOCTOR':
+            for val in value:
+                pdf.cell(line_len, line_wid, txt=val, ln=line, align='C')
+                line += 1
+        elif key == 'TEST':
+            for each_test in value:
+                pdf.cell(line_len, line_wid, txt=each_test, ln=line, align='C')
+                line += 1
+        elif key == 'MEDICINE DOSAGE DESCRIPTION':
+            # value is a list of dictionaries
+            med_no = 1
+            for each_medinfo in value:
+                # each_medinfo is a dictionary
+                text = str(med_no) + '. '+each_medinfo['medicine'] + '  ' \
+                       + each_medinfo['dosage'] + ' ' + each_medinfo['description']
+                med_no += 1
+                print('med text info')
+                print(each_medinfo)
+                pdf.cell(line_len, line_wid, txt=text, ln=line, align='C')
+                line += 1
+        else:
+            pdf.cell(line_len, line_wid, txt=value, ln=line, align='C')
+            line += 1
+        # if line > 24:
+        #     pdf.add_page()
+        #     line = 1
+
+    # for i in range(1,10):
+    #     pdf.cell(line_len, 10, txt='00*****************************************************00', ln=line, align='C')
+    appointment = Appointment.objects.get(id=appointment_id)
+    filename = 'Dr. ' + str(appointment.chamber.doctor.first_name) + ' ' +\
+               str(appointment.chamber.doctor.last_name) + ' ' +\
+               str(appointment.date) + '.pdf'
+    pdf.output(filename)

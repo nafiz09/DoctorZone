@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Doctor{% endblock %}
+
+{% block nav %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Prescription</h2>
+
+                    <div class="row row-space">
+                        {% for key, value in Prescription.items %}
+
+                            <h4><b><label class="label">{{ key }}</label></b></h4><br>
+                            {% if key == 'DOCTOR' %}
+                                {% for doc_info in value %}
+                                    <p><h4>{{ doc_info }}</h4></p>
+                                {% endfor %}
+                            {% elif key == 'TEST' %}
+                                {% for each_test in value %}
+                                    <p><h4>{{ each_test }}</h4></p>
+                                {% endfor %}
+                            {% elif key == 'MEDICINE DOSAGE DESCRIPTION' %}
+                                <div class="row row-space">
+                                    <div class="col-3">
+                                        <h4><b><label class="label">Medicine</label></b></h4>
+                                    </div>
+                                    <div class="col-3">
+                                        <h4><b><label class="label">Dosage</label></b></h4>
+                                    </div>
+                                    <div class="col-3">
+                                        <h4><b><label class="label">Description</label></b></h4>
+                                    </div>
+                                </div>
+                                {% for med_dict in value %}
+                                    <div class="row row-space">
+                                        {% for key1, value1 in med_dict.items %}
+                                            <div class="col-3">
+                                                <h4><label class="label">{{ value1 }}</label></h4>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {#                                    <div class="col-3">#}
+                                    {#                                        <h4><b><label class="label">Dosage</label></b></h4>#}
+                                    {#                                    </div>#}
+                                    {#                                    <div class="col-3">#}
+                                    {#                                        <h4><b><label class="label">Description</label></b></h4>#}
+                                    {#                                    </div>#}
+                                {% endfor %}
+                            {% else %}
+                                <p><h4>{{ value }}</h4></p>
+                            {% endif %}
+
+                            <br>
+                        {% endfor %}
+                    </div>
+
+                    <form method="POST" action="{% url 'doctor:end_meeting' doctor.id appointment_id %}">
+                        {% csrf_token %}
+                        <div class="p-t-15">
+                            <button class="btn btn--radius-2 btn--blue" type="submit">End Meeting</button>
+                        </div>
+                    </form>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

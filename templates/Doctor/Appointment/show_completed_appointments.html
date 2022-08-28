@@ -23,12 +23,12 @@
                                 {% for each_data in value  %}
                                     <div class="card-body">
                                         <h5 class="card-title"> Patient name: {{ each_data.patient }} </h5>
-                                        <p class="card-text">description : {{ each_data.description}}</p>
+{#                                        <p class="card-text">description : {{ each_data.description}}</p>#}
                                         <a href="{% url 'doctor:show_patient_profile' doctor.first_name each_data.patient_id %}" class="btn btn-primary">
                                             Show profile of {{ each_data.patient }}</a>
 
-{#                                        <a href="{% url 'doctor:input_OTP' doctor.first_name each_data.appointment_id  %}" class="btn btn-primary">#}
-{#                                            Start Appointment </a>#}
+                                        <a href="{% url 'doctor:show_completed_prescription' doctor.first_name each_data.appointment_id  %}" class="btn btn-primary">
+                                            Show Prescription </a>
 
 
 {#                                        <a href="{% url 'doctor:write_prescription' doctor.first_name each_data.patient_id  %}" class="btn btn-primary">#}
@@ -43,16 +43,5 @@
             </div>
         </div>
     </div>
-
-
-    {#                    {% for chamber in chambers %}#}
-    {#                        <div class="card text-center" style="width: 25rem;">#}
-    {#                            <div class="card-body">#}
-    {#                                <h5 class="card-title"> {{ chamber.payment }}</h5>#}
-    {#                                <p class="card-text"></p>#}
-    {#                                <a href="#" class="btn btn-primary">Go somewhere</a>#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {#                    {% endfor %}#}
 
 {% endblock %}

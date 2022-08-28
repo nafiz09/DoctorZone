@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Doctor{% endblock %}
+
+{% block nav %}
+    {% include 'Doctor/Home/nav_doctor.html' %}
+{% endblock %}
+
+{% block card_chamber %}
+
+    <div class="container ">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-3">
+                <div class="card-body">
+                    <h2 class="title"> Chamber No: {{ chamber.id }} Address : {{ chamber.address }} Appointments </h2>
+                    <div class="row row-space">
+                        {% for appointment in Appointments %}
+                            <div class="card text-center">
+                                <h5 class="card-header">Patient's Name : {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h5>
+                                <div class="card-body">
+                                    <h5 class="card-title">Demo Problem Description</h5>
+                                    <p class="card-text"></p>
+                                    <a href="{% url 'doctor:show_patient_profile' doctor.first_name appointment.patient_id %}"
+                                       class="btn btn-primary">
+                                        Show profile of {{ appointment.patient.first_name }}</a>
+
+                                    <a href="{% url 'doctor:input_OTP' doctor.first_name appointment.id %}"
+                                       class="btn btn-primary">
+                                        Start Appointment </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -89,30 +89,17 @@
                                     <ul class="dropdown">
                                         <li><a href="#"> EDIT PROFILE</a></li>
                                         <li><a href="{% url 'doctor:show_profile' doctor.first_name %}"> SHOW PROFILE </a> </li>
-{#                                        <li><a href="{% url 'doctor:show_appointments_chamber' doctor.first_name %}"> APPOINTMENTS </a></li>#}
-                                        <li><a href="#"> APPOINTMENTS </a></li>
                                         <li><a href="{% url 'doctor:show_chamber' doctor.first_name %}"> CHAMBER DETAILS</a></li>
-                                        <li><a href="{% url 'doctor:add_chamber' doctor.first_name %}"> ADD CHAMBER</a>
-{#                                        here first name variable is sent to add that to the url  #}
-                                        </li>
-                                        <li><a href="{% url 'doctor:prescription' doctor.first_name %}"> Customize Prescription </a></li>
-
-
-                                        {#                                          <li><a href="#"> {{ doctor }}</a></li>#}
-                                        {#                                          <li><a href="#"> {{ doctor.first_name }}</a></li>#}
-
+                                        <li><a href="{% url 'doctor:add_chamber' doctor.first_name %}"> ADD CHAMBER</a></li>
+                                        <li><a href="{% url 'doctor:customize_prescription' doctor.first_name %}"> Customize Prescription </a></li>
+{#                                        <li><a href="{% url 'doctor:todays_appointments' doctor.first_name %}"> Today's Appointments </a></li>#}
                                     </ul>
                                 </li>
-
                             </ul>
-
                         </div>
                         <!-- Nav End -->
                     </div>
-
                     <!-- Booking Now Button -->
-
-
                 </nav>
             </div>
         </div>
