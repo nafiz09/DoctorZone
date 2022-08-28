@@ -73,9 +73,10 @@ def pending_orders(request):
             return render(request, 'deliveryman/show_details.html', c)
         else:
             order = Order.objects.get(id=st)
-            order.status = 'Got_deliveryman'
-            order.deliveryman = deliveryman
-            order.save()
+            if order.status == 'Accepted':
+                order.status = 'Got_deliveryman'
+                order.deliveryman = deliveryman
+                order.save()
             return render(request, 'deliveryman/pending_orders.html', context)
 
     return render(request, 'deliveryman/pending_orders.html', context)
@@ -104,13 +105,15 @@ def running_orders(request):
             return render(request, 'deliveryman/show_details.html', c)
         elif picked != None:
             order = Order.objects.get(id=picked)
-            order.status = 'Picked'
-            order.save()
+            if order.status == 'Got_deliveryman':
+                order.status = 'Picked'
+                order.save()
             return render(request, 'deliveryman/running_orders.html', context)
         elif delivered != None:
             order = Order.objects.get(id=delivered)
-            order.status = 'Delivered'
-            order.save()
+            if order.status == 'Picked':
+                order.status = 'Delivered'
+                order.save()
             return render(request, 'deliveryman/running_orders.html', context)
 
     return render(request, 'deliveryman/running_orders.html', context)
