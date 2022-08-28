@@ -3,6 +3,7 @@ from deliveryman.models import *
 from accounts.models import *
 from datetime import date, timedelta
 from order.models import *
+from django.db.models import Q
 
 # Create your views here.
 
@@ -73,9 +74,65 @@ def pending_orders(request):
         else:
             order = Order.objects.get(id=st)
             order.status = 'Got_deliveryman'
+            order.deliveryman = deliveryman
             order.save()
             return render(request, 'deliveryman/pending_orders.html', context)
 
     return render(request, 'deliveryman/pending_orders.html', context)
 
+
+def running_orders(request):
+    deliveryman_id = request.session['deliveryman']
+    deliveryman = Deliveryman.objects.get(id=deliveryman_id)
+    orders = Order.objects.filter(Q(status='Got_deliveryman') | Q(status='Picked'))
+    context = {
+        'deliveryman_id': deliveryman.id,
+        'name': deliveryman.first_name,
+        'orders': orders
+    }
+    if request.method == "POST":
+        order_id = request.POST.get('selected')
+        picked = request.POST.get('picked')
+        delivered = request.POST.get('delivered')
+        if order_id != None:
+            order = Order.objects.get(id=order_id)
+            c = {
+                'deliveryman_id': deliveryman.id,
+                'name': deliveryman.first_name,
+                'order': order
+                }
+            return render(request, 'deliveryman/show_details.html', c)
+        elif picked != None:
+            order = Order.objects.get(id=picked)
+            order.status = 'Picked'
+            order.save()
+            return render(request, 'deliveryman/running_orders.html', context)
+        elif delivered != None:
+            order = Order.objects.get(id=delivered)
+            order.status = 'Delivered'
+            order.save()
+            return render(request, 'deliveryman/running_orders.html', context)
+
+    return render(request, 'deliveryman/running_orders.html', context)
     
+
+def completed_orders(request):
+    deliveryman_id = request.session['deliveryman']
+    deliveryman = Deliveryman.objects.get(id=deliveryman_id)
+    orders = Order.objects.filter(status='Delivered')
+    context = {
+        'deliveryman_id': deliveryman.id,
+        'name': deliveryman.first_name,
+        'orders': orders
+    }
+    if request.method == "POST":
+        order_id = request.POST.get('selected')
+        order = Order.objects.get(id=order_id)
+        c = {
+            'deliveryman_id': deliveryman.id,
+            'name': deliveryman.first_name,
+            'order': order
+            }
+        return render(request, 'deliveryman/show_details.html', c)
+
+    return render(request, 'deliveryman/delivered_orders.html', context)

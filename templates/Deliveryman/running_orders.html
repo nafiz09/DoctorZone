@@ -32,8 +32,12 @@
             <button type="submit" class="btn btn-primary btn-sm">Show Details</button>
           </form></td>
           <td><form method="post">{% csrf_token %}
-            <input type="hidden" name = "status" value="{{order.id}}">
-            <button type="submit" class="btn btn-primary btn-sm">Accept</button>
+            <input type="hidden" name = "picked" value="{{order.id}}">
+            <button type="submit" class="btn btn-primary btn-sm">Picked</button>
+          </form></td>
+          <td><form method="post">{% csrf_token %}
+            <input type="hidden" name = "delivered" value="{{order.id}}">
+            <button type="submit" class="btn btn-primary btn-sm">Delivered</button>
           </form></td>
       </tr>
   {% endfor %}

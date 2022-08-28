@@ -31,10 +31,6 @@
             <input type="hidden" name = "selected" value="{{order.id}}">
             <button type="submit" class="btn btn-primary btn-sm">Show Details</button>
           </form></td>
-          <td><form method="post">{% csrf_token %}
-            <input type="hidden" name = "status" value="{{order.id}}">
-            <button type="submit" class="btn btn-primary btn-sm">Accept</button>
-          </form></td>
       </tr>
   {% endfor %}
   </tbody>
