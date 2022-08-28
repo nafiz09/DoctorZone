@@ -1,7 +1,7 @@
-
 import random
 from datetime import date
 from datetime import timedelta
+
 from asyncio.windows_events import NULL
 import datetime
 
@@ -20,7 +20,6 @@ from fpdf import FPDF
 from pharmacy.models import *
 from item.models import Item
 from order.models import *
-
 # Create your views here.
 
 #vtegsddhttsalowy
