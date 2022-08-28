@@ -2,3 +2,4 @@ venv
 *.png
 *.jpg
 db.sqlite3
+*.pyc
