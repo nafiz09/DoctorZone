@@ -12,6 +12,11 @@
 
 {% block registration_form %}
 <h3>Order no: {{ order_id }}</h3>
+<h3>Shop Details:</h3>
+<p>Shop name: {{ order.pharmacy.shop_name }}</p>
+<p>Shop address: {{ order.pharmacy.address }}</p>
+<p>Shop phone: {{ order.pharmacy.mobile_no }}</p>
+
 <h3>Deliveryman Details:</h3>
 <p>Deliveryman name:{{ order.deliveryman.first_name }} {{ order.deliveryman.last_name }}</p>
 <p>Mobile num: {{ order.deliveryman.mobile_no }}</p>

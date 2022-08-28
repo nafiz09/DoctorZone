@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Patient{% endblock %}
+{% block title %}Pharmacy{% endblock %}
 
 
 {% block nav %}
@@ -11,7 +11,10 @@
 
 
 {% block registration_form %}
-<p>Order no: {{ order_id }}</p>
+<h3>Order no: {{ order_id }}</h3>
+<h3>Deliveryman Details:</h3>
+<p>Deliveryman name:{{ order.deliveryman.first_name }} {{ order.deliveryman.last_name }}</p>
+<p>Mobile num: {{ order.deliveryman.mobile_no }}</p>
 <table class="table">
   <thead>
   <tr>

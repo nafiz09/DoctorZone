@@ -107,11 +107,13 @@ def show_orders(request):
         order_id = request.POST.get('selected')
         status = request.POST.get('status')
         if status == None:
+            order = Order.objects.get(id=order_id)
             items = Item.objects.filter(order_id=request.POST.get('selected'))
             total = 0
             for item in items:
                 total += item.total
             c = {
+                'order': order,
                 'order_id': order_id,
                 'items': items,
                 'total': total
@@ -120,8 +122,10 @@ def show_orders(request):
         
         else:
             order = Order.objects.get(id=status)
-            order.status = 'Accepted'
-            order.save()
+            st = order.status
+            if st == 'Pending':
+                order.status = 'Accepted'
+                order.save()
             return render(request, 'pharmacy/show_orders.html', context)
         
 
