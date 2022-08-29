@@ -550,5 +550,5 @@ def convertPDF(appointment_id):
     appointment = Appointment.objects.get(id=appointment_id)
     filename = 'Dr. ' + str(appointment.chamber.doctor.first_name) + ' ' +\
                str(appointment.chamber.doctor.last_name) + ' ' +\
-               str(appointment.date) + '.pdf'
+               str(appointment.date) + str(random.randint(1, 99)) + '.pdf'
     pdf.output(filename)

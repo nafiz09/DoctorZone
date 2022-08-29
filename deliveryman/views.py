@@ -33,7 +33,7 @@ def signup(request):
             #redirect to login
             return render(request, "Accounts/home.html", {})
 
-        return render(request, "Deliveryman/registration.html", {})
+        return render(request, "deliveryman/registration.html", {})
 
 
 def load_deliveryman(request, name):
@@ -49,7 +49,7 @@ def load_deliveryman(request, name):
         'name': name
     }
 
-    return render(request, 'deliveryman/home.html', context)
+    return render(request, 'deliveryman/deliveryman_home.html', context)
 
 def pending_orders(request):
     deliveryman_id = request.session['deliveryman']

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% include 'pharmacy/nav_pharmacy.html' %}
+{% endblock %}
+
+
+{% block registration_form %}
+
+    <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="container ">
+            <div class="wrapper wrapper--w680">
+                <div class="card card-4">
+                    <div class="card-body">
+                        <h1 class="title">Add Product</h1>
+
+        <table class="table">
+  <thead>
+  <tr>
+      <th scope="col">Medicine name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Description</th>
+
+  </tr>
+  </thead>
+  <tbody>
+      <tr>
+
+          <td> <input type="text" class="form-control" name="{{ item.id }}" value="{{product.name}}"> </td>
+          <td> <input type="text" class="form-control" name="{{ item.id }}" value="{{product.price}}"> </td>
+          <td> <input type="text" class="form-control" name="{{ item.id }}" value="{{product.description}}"> </td>
+          <td><form method="post">{% csrf_token %}
+            <input type="hidden" name = "id" value="{{product.id}}">
+            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+          </form>
+          </td>
+      </tr>
+  </tbody>
+</table>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}

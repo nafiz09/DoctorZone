@@ -7,7 +7,7 @@ from accounts.models import *
 from datetime import date, datetime
 from django.core import serializers
 import accounts.views as account_views
-
+from fpdf import FPDF
 
 # Create your views here.
 
@@ -293,6 +293,7 @@ def setupChamberList(doctor_id):
         dictionary['payment'] = str(chamber.payment)
         dictionary['chamber_id'] = str(chamber.id)
         dictionary['doctor_name'] = str("Dr. " + doctor.first_name + " " + doctor.last_name)
+        dictionary['address'] = str(chamber.address)
         print("each chamber info")
         print(dictionary)
         chambers_dic_list.append(dictionary)
@@ -692,14 +693,14 @@ def write_prescription(request, name, appointment_id):
         print('medicine string')
         print(medicine_string)
         presValues['MEDICINE DOSAGE DESCRIPTION'] = medicine_string
-        presFields_extra = presFields[7:]
+        presFields_extra = presFields[6:]
 
         for field in presFields_extra:
             presValues[field] = request.POST.get(field, '')
 
         prescription = ''
         for key, value in presValues.items():
-            print(str(key) + '--->' +str(value))
+            print(str(key) + '--->' + str(value))
             prescription = prescription + str(key) + '&' + str(value) + '#'
 
         prescription = prescription[:-1]
@@ -714,6 +715,8 @@ def write_prescription(request, name, appointment_id):
             'patient': patient,
             'appointment_id': appointment_id
         }
+        print('final context after wrting prescription')
+        print(context)
         return render(request, 'Doctor/Appointment/show_prescription.html', context)
 
     return render(request, 'Doctor/Appointment/write_prescription.html', context)
@@ -723,6 +726,8 @@ def prescriptionToDict(appointment_id):
     prescription = Appointment.objects.get(id=appointment_id).prescription
 
     prescription_list = prescription.split('#')
+    print('Prescription parsing from database')
+    print(prescription_list)
     Dict = {}
     doctor = Appointment.objects.get(id=appointment_id).chamber.doctor
     # value = 'Dr.' + str(doctor.first_name) + ' ' + str(doctor.last_name) + '\n'+str(doctor.specialist)+'\n'
@@ -792,6 +797,8 @@ def end_meeting(request, name, appointment_id):
 
     appointment.state = 'Completed'
     appointment.save()
+
+    convertPDF(appointment_id)
 
     return redirect(reverse('doctor:show_appointments_chamber', kwargs={'name': doctor.first_name, 'chamber_id': chamber_id}))
 
@@ -946,6 +953,70 @@ def start_todays_appointments(request, name, chamber_id):
     }
 
     return render(request, 'Doctor/Appointment/todays_appointments.html', context)
+
+
+def convertPDF(appointment_id):
+    pres_dict = prescriptionToDict(appointment_id)
+
+    print('inside convert pdf')
+    print(pres_dict)
+
+    pdf = FPDF()
+
+    pdf.add_page()
+
+    line_len = 150
+    line_wid = 8
+
+    pdf.set_font('Arial', 'B', size=20)
+
+    pdf.cell(line_len, 14, txt='A DOCKZONE Service', ln=1, align='C')
+    pdf.cell(line_len, 14, txt='Prescription', ln=2, align='C')
+    pdf.cell(line_len, 14, txt='---------------------------------------------------------------', ln=2, align='C')
+
+    line = 3
+    a = 'L'
+    pdf.set_font('Arial', size=14)
+
+    for key, value in pres_dict.items():
+        pdf.set_font('Arial', 'B', size=16)
+        pdf.cell(line_len, line_wid, txt=key, ln=line, align=a)
+        pdf.set_font('Arial', size=15)
+        line += 1
+        if key == 'DOCTOR':
+            for val in value:
+                pdf.cell(line_len, line_wid, txt=val, ln=line, align='C')
+                line += 1
+        elif key == 'TEST':
+            for each_test in value:
+                pdf.cell(line_len, line_wid, txt=each_test, ln=line, align='C')
+                line += 1
+        elif key == 'MEDICINE DOSAGE DESCRIPTION':
+            # value is a list of dictionaries
+            med_no = 1
+            for each_medinfo in value:
+                # each_medinfo is a dictionary
+                text = str(med_no) + '. '+each_medinfo['medicine'] + '  ' \
+                       + each_medinfo['dosage'] + ' ' + each_medinfo['description']
+                med_no += 1
+                print('med text info')
+                print(each_medinfo)
+                pdf.cell(line_len, line_wid, txt=text, ln=line, align='C')
+                line += 1
+        else:
+            pdf.cell(line_len, line_wid, txt=value, ln=line, align='C')
+            line += 1
+        # if line > 24:
+        #     pdf.add_page()
+        #     line = 1
+
+    # for i in range(1,10):
+    #     pdf.cell(line_len, 10, txt='00*****************************************************00', ln=line, align='C')
+    appointment = Appointment.objects.get(id=appointment_id)
+    filename = 'Dr. ' + str(appointment.chamber.doctor.first_name) + ' ' +\
+               str(appointment.chamber.doctor.last_name) + ' ' +\
+               str(appointment.date) + ' ' + str(appointment_id) + '.pdf'
+    pdf.output(filename)
 
 
 #

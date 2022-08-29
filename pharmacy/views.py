@@ -59,8 +59,8 @@ def show_products(request):
         'name': pharmacy.shop_name,
         'products': products
     }
-
     return render(request, 'pharmacy/show_products.html', context)
+
 
 def add_product(request):
     pharmacy_id = request.session['pharmacy']

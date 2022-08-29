@@ -3,3 +3,4 @@ venv
 *.jpg
 db.sqlite3
 *.pyc
+*.pdf

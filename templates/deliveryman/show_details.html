@@ -11,6 +11,8 @@
 
 
 {% block registration_form %}
+    <div class="container ">
+  <div class="wrapper wrapper--w680">
 <h1>Pickup Details:</h1>
 <h3>Shop name: {{ order.pharmacy.shop_name }}</h3>
 <h3>Address: {{ order.pharmacy.address }}</h3>
@@ -20,5 +22,7 @@
 <h3>Customer name: {{ order.customer.first_name }} {{ order.customer.last_name }}</h3>
 <h3>Address: {{ order.address }}</h3>
 <h3>Mobile no: {{ order.customer.mobile_no }}</h3>
+      </div>
+  </div>
 
 {% endblock %}

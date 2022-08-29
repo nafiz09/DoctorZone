@@ -11,6 +11,8 @@
 
 
 {% block registration_form %}
+    <div class="container ">
+  <div class="wrapper wrapper--w680">
 <h3>Order no: {{ order_id }}</h3>
 <h3>Shop Details:</h3>
 <p>Shop name: {{ order.pharmacy.shop_name }}</p>
@@ -50,6 +52,8 @@
 </table>
 
 <h1>Total: {{ total }}</h1>
+  </div>
+    </div>
     
 
 {% endblock %}

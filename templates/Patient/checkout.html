@@ -11,6 +11,8 @@
 
 
 {% block registration_form %}
+    <div class="container ">
+    <div class="wrapper wrapper--w680">
 <form method="post">{% csrf_token %}
 <table class="table">
   <thead>
@@ -45,6 +47,8 @@
   <h1>Total: {{ total }} </h1>
 <button type="submit" class="btn btn-primary btn-sm">Order now!</button>
       </form>
+    </div>
+    </div>
     
 
 {% endblock %}
