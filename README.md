@@ -5,11 +5,11 @@ A doctor can manage his/her appointments, can write customizable prescriptions, 
 A patient can browse different products, can order products from a pharmacy. The Patient can get a home delivery from the medicine shop via a delivery guy.
 
 We have the following modules in our project
--patient
--doctor
--pharmacy
--deliveryman
--product
--accounts
--item
--order
+- patient
+- doctor
+- pharmacy
+- deliveryman
+- product
+- accounts
+- item
+- order
